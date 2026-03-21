@@ -1,0 +1,1226 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tez Revestimentos — Sistema Financeiro</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f4f3ef;
+    --surface: #ffffff;
+    --surface2: #f9f8f5;
+    --border: #e5e2da;
+    --border2: #d0cdc3;
+    --text: #1a1917;
+    --text2: #6b6760;
+    --text3: #9c9890;
+    --accent: #c8a96e;
+    --accent-dark: #a8863e;
+    --green: #2d7a4f;
+    --green-bg: #e8f5ee;
+    --red: #c0392b;
+    --red-bg: #fdecea;
+    --amber: #b7791f;
+    --amber-bg: #fef3e2;
+    --blue: #1a56a0;
+    --blue-bg: #e8f0fb;
+    --sidebar-w: 230px;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* LAYOUT */
+  #app { display: flex; height: 100vh; overflow: hidden; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: var(--sidebar-w);
+    min-width: var(--sidebar-w);
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 20px 18px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .logo-mark {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+  .logo-mark span { color: var(--accent); }
+  .logo-sub {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 3px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  .nav-group { padding: 16px 10px 8px; }
+  .nav-group-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    padding: 0 8px;
+    margin-bottom: 6px;
+  }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-size: 13px;
+    color: var(--text2);
+    transition: all 0.12s;
+    user-select: none;
+  }
+  .nav-item:hover { background: var(--surface2); color: var(--text); }
+  .nav-item.active { background: #fdf6ec; color: var(--accent-dark); font-weight: 500; }
+  .nav-icon { width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+
+  .sidebar-footer {
+    margin-top: auto;
+    padding: 12px 10px;
+    border-top: 1px solid var(--border);
+  }
+  .periodo-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    background: var(--surface2);
+    border-radius: var(--radius-sm);
+    font-size: 11px;
+    color: var(--text2);
+  }
+  .periodo-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
+
+  /* MAIN */
+  .main { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
+  /* TOPBAR */
+  .topbar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .topbar-left h1 { font-size: 15px; font-weight: 600; color: var(--text); }
+  .topbar-left p { font-size: 12px; color: var(--text3); margin-top: 1px; }
+  .topbar-right { display: flex; gap: 10px; align-items: center; }
+
+  .btn {
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border2);
+    background: var(--surface);
+    color: var(--text2);
+    font-family: 'Inter', sans-serif;
+    transition: all 0.12s;
+  }
+  .btn:hover { background: var(--surface2); color: var(--text); }
+  .btn-gold {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .btn-gold:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: white; }
+
+  /* CONTENT */
+  .content { padding: 24px 28px; flex: 1; }
+
+  /* PAGE SYSTEM */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* KPI GRID */
+  .kpi-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .kpi-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 18px;
+  }
+  .kpi-label { font-size: 11px; color: var(--text3); text-transform: uppercase; letter-spacing: 0.7px; margin-bottom: 8px; }
+  .kpi-value { font-size: 24px; font-weight: 600; color: var(--text); font-family: 'DM Mono', monospace; letter-spacing: -1px; }
+  .kpi-value.sm { font-size: 20px; }
+  .kpi-meta { font-size: 11px; margin-top: 6px; display: flex; align-items: center; gap: 4px; color: var(--text3); }
+  .tag-up { color: var(--green); font-weight: 500; }
+  .tag-down { color: var(--red); font-weight: 500; }
+  .tag-warn { color: var(--amber); font-weight: 500; }
+
+  /* GRID LAYOUTS */
+  .grid-2 { display: grid; grid-template-columns: 3fr 2fr; gap: 16px; margin-bottom: 16px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+  .grid-2-even { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 18px;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .card-title { font-size: 13px; font-weight: 600; color: var(--text); }
+  .card-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .card-link { font-size: 11px; color: var(--accent-dark); cursor: pointer; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th {
+    text-align: left;
+    padding: 7px 10px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text3);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+  }
+  tbody td { padding: 10px 10px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--surface2); }
+  .td-mono { font-family: 'DM Mono', monospace; font-size: 12px; }
+  .td-right { text-align: right; }
+
+  /* BADGES */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+  .badge-green { background: var(--green-bg); color: var(--green); }
+  .badge-red { background: var(--red-bg); color: var(--red); }
+  .badge-amber { background: var(--amber-bg); color: var(--amber); }
+  .badge-blue { background: var(--blue-bg); color: var(--blue); }
+  .badge-gray { background: var(--surface2); color: var(--text2); }
+
+  /* PROGRESS */
+  .progress-wrap { margin-top: 8px; }
+  .progress-bar { height: 5px; background: var(--border); border-radius: 3px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 3px; transition: width 0.3s; }
+
+  /* CHART */
+  .chart-wrap { position: relative; }
+
+  /* ALERT BOX */
+  .alert-box {
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 20px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .alert-gold { background: #fdf6ec; border: 1px solid #f0d9a0; }
+  .alert-red { background: var(--red-bg); border: 1px solid #f5b8b3; }
+  .alert-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
+  .alert-title { font-size: 12px; font-weight: 600; margin-bottom: 3px; }
+  .alert-text { font-size: 12px; color: var(--text2); line-height: 1.6; }
+
+  /* CANAL VISUAL */
+  .canal-item { padding: 12px 0; border-bottom: 1px solid var(--border); }
+  .canal-item:last-child { border-bottom: none; }
+  .canal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .canal-name { font-size: 12px; font-weight: 500; color: var(--text); }
+  .canal-values { font-size: 11px; color: var(--text3); }
+
+  /* STATUS PILLS no topo */
+  .status-pills { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  .status-pill {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 160px;
+  }
+  .status-pill-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .status-pill-val { font-size: 22px; font-weight: 600; font-family: 'DM Mono', monospace; }
+  .status-pill-label { font-size: 11px; color: var(--text3); }
+
+  /* PAYMENT BAR */
+  .pay-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--border); }
+  .pay-item:last-child { border-bottom: none; }
+  .pay-name { font-size: 12px; color: var(--text); min-width: 130px; }
+  .pay-bar-wrap { flex: 1; background: var(--border); border-radius: 3px; height: 6px; overflow: hidden; }
+  .pay-bar-fill { height: 100%; border-radius: 3px; background: var(--accent); }
+  .pay-val { font-size: 11px; font-family: 'DM Mono', monospace; color: var(--text2); min-width: 90px; text-align: right; }
+
+  /* LANÇAMENTOS TABLE FILTERS */
+  .filter-bar { display: flex; gap: 8px; margin-bottom: 14px; align-items: center; flex-wrap: wrap; }
+  .filter-bar input, .filter-bar select {
+    padding: 7px 11px;
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-size: 12px;
+    font-family: 'Inter', sans-serif;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+  }
+  .filter-bar input:focus, .filter-bar select:focus { border-color: var(--accent); }
+  .filter-bar input { min-width: 220px; }
+  .filter-count { margin-left: auto; font-size: 11px; color: var(--text3); }
+
+  /* META GAUGE */
+  .gauge-wrap { display: flex; flex-direction: column; align-items: center; padding: 10px 0; }
+  .gauge-pct { font-size: 36px; font-weight: 600; font-family: 'DM Mono', monospace; color: var(--accent-dark); }
+  .gauge-label { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .gauge-bar-wrap { width: 100%; background: var(--border); border-radius: 4px; height: 8px; margin-top: 12px; overflow: hidden; }
+  .gauge-bar-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent) 0%, var(--accent-dark) 100%); }
+
+  /* EMPTY STATE */
+  .empty { text-align: center; padding: 40px 20px; color: var(--text3); font-size: 13px; }
+
+  /* RESPONSIVE adjusts */
+  @media (max-width: 900px) {
+    .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+    .grid-2 { grid-template-columns: 1fr; }
+    .grid-3 { grid-template-columns: 1fr; }
+    .grid-2-even { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">Tez<span>.</span>Finance</div>
+      <div class="logo-sub">Sistema Financeiro</div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Visão Geral</div>
+      <div class="nav-item active" onclick="navigate('dashboard', this)">
+        <div class="nav-icon">⬡</div> Dashboard
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Análise Comercial</div>
+      <div class="nav-item" onclick="navigate('lancamentos', this)">
+        <div class="nav-icon">≔</div> Lançamentos
+      </div>
+      <div class="nav-item" onclick="navigate('canais', this)">
+        <div class="nav-icon">◫</div> Canais de Venda
+      </div>
+      <div class="nav-item" onclick="navigate('clientes', this)">
+        <div class="nav-icon">◎</div> Top Clientes
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Controle de Margem</div>
+      <div class="nav-item" onclick="navigate('vazamentos', this)">
+        <div class="nav-icon" style="color: var(--red)">⚠</div> Vazamentos
+        <span style="margin-left:auto; background:var(--red-bg); color:var(--red); font-size:10px; font-weight:600; padding:1px 6px; border-radius:10px;">6</span>
+      </div>
+      <div class="nav-item" onclick="navigate('metas', this)">
+        <div class="nav-icon">◉</div> Metas MC
+      </div>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Pagamentos</div>
+      <div class="nav-item" onclick="navigate('pagamentos', this)">
+        <div class="nav-icon">⊟</div> Formas de Pag.
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="periodo-badge">
+        <div class="periodo-dot"></div>
+        <div>
+          <div style="font-weight:600; font-size:11px; color:var(--text)">Fevereiro 2026</div>
+          <div style="font-size:10px; margin-top:1px">152 lançamentos</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- ==================== DASHBOARD ==================== -->
+    <div id="page-dashboard" class="page active">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Dashboard Executivo</h1>
+          <p>Fevereiro 2026 · Tez Revestimentos</p>
+        </div>
+        <div class="topbar-right">
+          <button class="btn" onclick="navigate('lancamentos', document.querySelector('.nav-item:nth-child(2)'))">Ver Lançamentos</button>
+          <button class="btn btn-gold">Exportar PDF</button>
+        </div>
+      </div>
+      <div class="content">
+
+        <!-- Alert -->
+        <div class="alert-box alert-gold">
+          <div class="alert-icon">◈</div>
+          <div>
+            <div class="alert-title" style="color:var(--accent-dark)">Resumo Executivo — Fevereiro 2026</div>
+            <div class="alert-text">Faturamento de <strong>R$ 250.395</strong> com margem de contribuição de <strong>47,9%</strong>. Meta mensal de R$ 300.000 — atingimento de <strong>83,5%</strong>. 6 itens com vazamento de margem detectados, representando R$ 10.100 em faturamento crítico.</div>
+          </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Faturamento Total</div>
+            <div class="kpi-value sm">R$ 250.395</div>
+            <div class="kpi-meta"><span class="tag-warn">83,5%</span> da meta mensal</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">MC Total (R$)</div>
+            <div class="kpi-value sm">R$ 120.012</div>
+            <div class="kpi-meta"><span class="tag-up">47,9%</span> sobre faturamento</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Pedidos / Itens</div>
+            <div class="kpi-value sm">81 / 152</div>
+            <div class="kpi-meta">81 pedidos · 152 linhas</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Gap vs Meta</div>
+            <div class="kpi-value sm" style="color:var(--red)">- R$ 49.605</div>
+            <div class="kpi-meta"><span class="tag-down">Abaixo da meta</span> R$ 300.000</div>
+          </div>
+        </div>
+
+        <!-- Status Pills -->
+        <div class="status-pills">
+          <div class="status-pill">
+            <div class="status-pill-dot" style="background:var(--green)"></div>
+            <div>
+              <div class="status-pill-val" style="color:var(--green)">85</div>
+              <div class="status-pill-label">Meta Batida</div>
+            </div>
+          </div>
+          <div class="status-pill">
+            <div class="status-pill-dot" style="background:var(--amber)"></div>
+            <div>
+              <div class="status-pill-val" style="color:var(--amber)">61</div>
+              <div class="status-pill-label">Atenção</div>
+            </div>
+          </div>
+          <div class="status-pill">
+            <div class="status-pill-dot" style="background:var(--red)"></div>
+            <div>
+              <div class="status-pill-val" style="color:var(--red)">6</div>
+              <div class="status-pill-label">Crítico</div>
+            </div>
+          </div>
+          <div class="status-pill" style="min-width:220px">
+            <div>
+              <div class="status-pill-val" style="font-size:16px">PIX dominante</div>
+              <div class="status-pill-label">71,8% das vendas por PIX</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts row -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Faturamento por Canal</div>
+                <div class="card-sub">Distribuição do faturamento e MC por tipo de cliente</div>
+              </div>
+            </div>
+            <div class="chart-wrap" style="height:220px">
+              <canvas id="chartCanal"></canvas>
+            </div>
+            <div style="display:flex;gap:16px;margin-top:12px;flex-wrap:wrap;">
+              <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#c8a96e;display:inline-block"></span>Consumidor Final</span>
+              <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#2d7a4f;display:inline-block"></span>Pintor/Construtor</span>
+              <span style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text2)"><span style="width:10px;height:10px;border-radius:2px;background:#1a56a0;display:inline-block"></span>Lojista</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Meta de Faturamento</div>
+                <div class="card-sub">Progresso vs meta mensal R$ 300.000</div>
+              </div>
+            </div>
+            <div class="gauge-wrap">
+              <div class="gauge-pct">83,5%</div>
+              <div class="gauge-label">R$ 250.395 de R$ 300.000</div>
+              <div class="gauge-bar-wrap" style="margin-top:16px">
+                <div class="gauge-bar-fill" style="width:83.5%"></div>
+              </div>
+            </div>
+            <div style="margin-top:20px">
+              <div class="canal-item">
+                <div class="canal-header">
+                  <span class="canal-name">Consumidor Final</span>
+                  <span class="canal-values">R$ 178.488 · <strong style="color:var(--green)">MC 51,8%</strong></span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:71.3%;background:var(--accent)"></div></div>
+              </div>
+              <div class="canal-item">
+                <div class="canal-header">
+                  <span class="canal-name">Pintor/Construtor/Arq.</span>
+                  <span class="canal-values">R$ 44.270 · <strong style="color:var(--amber)">MC 43,0%</strong></span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:17.7%;background:var(--amber)"></div></div>
+              </div>
+              <div class="canal-item">
+                <div class="canal-header">
+                  <span class="canal-name">Lojista</span>
+                  <span class="canal-values">R$ 27.638 · <strong style="color:var(--red)">MC 30,8%</strong></span>
+                </div>
+                <div class="progress-bar"><div class="progress-fill" style="width:11%;background:var(--red)"></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MC por canal + top clientes -->
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">Top 8 Clientes por Faturamento</div>
+                <div class="card-sub">Fev 2026</div>
+              </div>
+              <div class="card-link" onclick="navigate('clientes', null)">Ver todos →</div>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Cliente</th>
+                    <th class="td-right">Fat (R$)</th>
+                    <th class="td-right">MC%</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>Condomínio Euroville II</td><td class="td-right td-mono">111.491</td><td class="td-right td-mono">48,5%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+                  <tr><td>James de Freitas Chaves</td><td class="td-right td-mono">19.750</td><td class="td-right td-mono">47,1%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+                  <tr><td>Teza Engenharia</td><td class="td-right td-mono">14.106</td><td class="td-right td-mono">36,0%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+                  <tr><td>Santri Sistemas Ltda</td><td class="td-right td-mono">9.500</td><td class="td-right td-mono">76,5%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
+                  <tr><td>Gustavo Henrique Alves</td><td class="td-right td-mono">8.620</td><td class="td-right td-mono">60,0%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
+                  <tr><td>Precisão Comércio Tintas</td><td class="td-right td-mono">8.518</td><td class="td-right td-mono">27,8%</td><td><span class="badge badge-red">Crítico</span></td></tr>
+                  <tr><td>Engenharia Serra Monteiro</td><td class="td-right td-mono">5.790</td><td class="td-right td-mono">49,4%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+                  <tr><td>Art Colors Tintas</td><td class="td-right td-mono">5.610</td><td class="td-right td-mono">36,9%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div>
+                <div class="card-title">MC% por Canal vs Meta</div>
+                <div class="card-sub">Margem realizada vs meta configurada</div>
+              </div>
+            </div>
+            <div class="chart-wrap" style="height:240px">
+              <canvas id="chartMC"></canvas>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ==================== LANÇAMENTOS ==================== -->
+    <div id="page-lancamentos" class="page">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Lançamentos de Vendas</h1>
+          <p>Fevereiro 2026 · 152 itens</p>
+        </div>
+        <div class="topbar-right">
+          <button class="btn btn-gold">+ Novo Lançamento</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="filter-bar">
+          <input type="text" id="searchInput" placeholder="Buscar cliente ou produto..." oninput="filterTable()">
+          <select id="filterCanal" onchange="filterTable()">
+            <option value="">Todos os canais</option>
+            <option value="Consumidor Final">Consumidor Final</option>
+            <option value="Lojista">Lojista</option>
+            <option value="Pintor/Construtor/Arquiteto">Pintor/Construtor/Arq.</option>
+          </select>
+          <select id="filterStatus" onchange="filterTable()">
+            <option value="">Todos os status</option>
+            <option value="Meta Batida">Meta Batida</option>
+            <option value="Atenção">Atenção</option>
+            <option value="Crítico">Crítico</option>
+          </select>
+          <span class="filter-count" id="filterCount">152 resultados</span>
+        </div>
+        <div class="card" style="padding:0">
+          <div class="table-wrap">
+            <table id="tableVendas">
+              <thead>
+                <tr>
+                  <th>Pedido</th>
+                  <th>NF</th>
+                  <th>Cliente</th>
+                  <th>Canal</th>
+                  <th>Produto</th>
+                  <th class="td-right">Qtd</th>
+                  <th class="td-right">V. Unit</th>
+                  <th class="td-right">V. Total</th>
+                  <th class="td-right">MC (R$)</th>
+                  <th class="td-right">MC%</th>
+                  <th>Pagamento</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="tbodyVendas"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== CANAIS ==================== -->
+    <div id="page-canais" class="page">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Canais de Venda</h1>
+          <p>Performance por tipo de cliente · Fev 2026</p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="kpi-grid">
+          <div class="kpi-card" style="border-top: 3px solid var(--accent)">
+            <div class="kpi-label">Consumidor Final</div>
+            <div class="kpi-value sm">R$ 178.488</div>
+            <div class="kpi-meta">29 pedidos · <span class="tag-up">MC 51,8%</span></div>
+          </div>
+          <div class="kpi-card" style="border-top: 3px solid var(--green)">
+            <div class="kpi-label">Pintor / Construtor / Arq.</div>
+            <div class="kpi-value sm">R$ 44.270</div>
+            <div class="kpi-meta">29 pedidos · <span class="tag-warn">MC 43,0%</span></div>
+          </div>
+          <div class="kpi-card" style="border-top: 3px solid var(--blue)">
+            <div class="kpi-label">Lojista</div>
+            <div class="kpi-value sm">R$ 27.638</div>
+            <div class="kpi-meta">22 pedidos · <span class="tag-down">MC 30,8%</span></div>
+          </div>
+          <div class="kpi-card" style="border-top: 3px solid var(--border2)">
+            <div class="kpi-label">Total Geral</div>
+            <div class="kpi-value sm">R$ 250.395</div>
+            <div class="kpi-meta">81 pedidos · <span class="tag-up">MC 47,9%</span></div>
+          </div>
+        </div>
+
+        <div class="grid-2-even">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">Faturamento por Canal</div>
+            </div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chartCanalFat"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">MC% Realizada vs Meta por Canal</div>
+            </div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chartCanalMeta"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Detalhamento por Canal</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>Canal</th>
+                <th class="td-right">Pedidos</th>
+                <th class="td-right">Faturamento</th>
+                <th class="td-right">MC (R$)</th>
+                <th class="td-right">MC%</th>
+                <th class="td-right">Meta MC%</th>
+                <th class="td-right">Desvio</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Consumidor Final</strong></td>
+                <td class="td-right">29</td>
+                <td class="td-right td-mono">R$ 178.488</td>
+                <td class="td-right td-mono">R$ 92.473</td>
+                <td class="td-right td-mono"><strong>51,8%</strong></td>
+                <td class="td-right td-mono">55,0%</td>
+                <td class="td-right td-mono" style="color:var(--amber)">-3,2%</td>
+                <td><span class="badge badge-amber">Atenção</span></td>
+              </tr>
+              <tr>
+                <td><strong>Pintor/Construtor/Arq.</strong></td>
+                <td class="td-right">29</td>
+                <td class="td-right td-mono">R$ 44.270</td>
+                <td class="td-right td-mono">R$ 19.029</td>
+                <td class="td-right td-mono"><strong>43,0%</strong></td>
+                <td class="td-right td-mono">45,0%</td>
+                <td class="td-right td-mono" style="color:var(--amber)">-2,0%</td>
+                <td><span class="badge badge-amber">Atenção</span></td>
+              </tr>
+              <tr>
+                <td><strong>Lojista</strong></td>
+                <td class="td-right">22</td>
+                <td class="td-right td-mono">R$ 27.638</td>
+                <td class="td-right td-mono">R$ 8.510</td>
+                <td class="td-right td-mono"><strong>30,8%</strong></td>
+                <td class="td-right td-mono">35,0%</td>
+                <td class="td-right td-mono" style="color:var(--red)">-4,2%</td>
+                <td><span class="badge badge-red">Abaixo da meta</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== CLIENTES ==================== -->
+    <div id="page-clientes" class="page">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Top Clientes</h1>
+          <p>Ranking por faturamento · Fev 2026</p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="alert-box alert-gold">
+          <div class="alert-icon">◈</div>
+          <div>
+            <div class="alert-title" style="color:var(--accent-dark)">Concentração de receita</div>
+            <div class="alert-text">O <strong>Condomínio Euroville II</strong> representa <strong>44,5% do faturamento total</strong> do mês (R$ 111.491). Alta concentração — qualquer oscilação neste cliente impacta diretamente o resultado mensal.</div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">Ranking de Clientes — Fevereiro 2026</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cliente</th>
+                <th>Canal</th>
+                <th class="td-right">Faturamento</th>
+                <th class="td-right">MC (R$)</th>
+                <th class="td-right">MC%</th>
+                <th class="td-right">% do Fat. Total</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>1</td><td><strong>Condomínio Euroville II</strong></td><td>Consumidor Final</td><td class="td-right td-mono">R$ 111.491</td><td class="td-right td-mono">R$ 54.090</td><td class="td-right td-mono">48,5%</td><td class="td-right td-mono">44,5%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+              <tr><td>2</td><td>James de Freitas Chaves</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 19.750</td><td class="td-right td-mono">R$ 9.296</td><td class="td-right td-mono">47,1%</td><td class="td-right td-mono">7,9%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+              <tr><td>3</td><td>Teza Engenharia</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 14.106</td><td class="td-right td-mono">R$ 5.085</td><td class="td-right td-mono">36,0%</td><td class="td-right td-mono">5,6%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+              <tr><td>4</td><td>Santri Sistemas Ltda</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 9.500</td><td class="td-right td-mono">R$ 7.264</td><td class="td-right td-mono">76,5%</td><td class="td-right td-mono">3,8%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
+              <tr><td>5</td><td>Gustavo Henrique Alves</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 8.620</td><td class="td-right td-mono">R$ 5.172</td><td class="td-right td-mono">60,0%</td><td class="td-right td-mono">3,4%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
+              <tr><td>6</td><td>Precisão Comércio Tintas</td><td>Lojista</td><td class="td-right td-mono">R$ 8.518</td><td class="td-right td-mono">R$ 2.365</td><td class="td-right td-mono">27,8%</td><td class="td-right td-mono">3,4%</td><td><span class="badge badge-red">Abaixo meta</span></td></tr>
+              <tr><td>7</td><td>Engenharia Serra Monteiro</td><td>Pintor/Arq.</td><td class="td-right td-mono">R$ 5.790</td><td class="td-right td-mono">R$ 2.861</td><td class="td-right td-mono">49,4%</td><td class="td-right td-mono">2,3%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+              <tr><td>8</td><td>Art Colors Tintas</td><td>Lojista</td><td class="td-right td-mono">R$ 5.610</td><td class="td-right td-mono">R$ 2.070</td><td class="td-right td-mono">36,9%</td><td class="td-right td-mono">2,2%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+              <tr><td>9</td><td>Rafaela Rodrigues</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 5.560</td><td class="td-right td-mono">R$ 3.481</td><td class="td-right td-mono">62,6%</td><td class="td-right td-mono">2,2%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
+              <tr><td>10</td><td>Welton Silva Pintor</td><td>Pintor/Arq.</td><td class="td-right td-mono">R$ 4.940</td><td class="td-right td-mono">R$ 2.312</td><td class="td-right td-mono">46,8%</td><td class="td-right td-mono">2,0%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== VAZAMENTOS ==================== -->
+    <div id="page-vazamentos" class="page">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Vazamentos de Margem</h1>
+          <p>Itens com MC abaixo de 10% · Fev 2026</p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="alert-box alert-red">
+          <div class="alert-icon">⚠</div>
+          <div>
+            <div class="alert-title" style="color:var(--red)">6 itens com vazamento detectados</div>
+            <div class="alert-text">Todos os 6 vazamentos são referentes ao produto <strong>Tela de Fibra de Vidro (40x40mm)</strong>. O custo de MP (R$ 700/un) é igual ou superior ao valor de venda em vários pedidos. Necessário revisar precificação deste produto urgentemente.</div>
+          </div>
+        </div>
+
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">Itens Críticos</div>
+            <div class="kpi-value" style="color:var(--red)">6</div>
+            <div class="kpi-meta">MC abaixo de 10%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Fat. em Risco</div>
+            <div class="kpi-value sm" style="color:var(--red)">R$ 10.100</div>
+            <div class="kpi-meta">4,0% do fat. total</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Produto Principal</div>
+            <div class="kpi-value sm" style="font-size:13px; color:var(--red); margin-top:8px">Tela Fibra Vidro</div>
+            <div class="kpi-meta">100% dos vazamentos</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Ação Necessária</div>
+            <div class="kpi-value sm" style="font-size:13px; color:var(--amber); margin-top:8px">Reprecificar</div>
+            <div class="kpi-meta">Custo MP = R$ 700/un</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Detalhamento dos Vazamentos</div></div>
+          <table>
+            <thead>
+              <tr>
+                <th>Pedido</th>
+                <th>Cliente</th>
+                <th>Produto</th>
+                <th class="td-right">Qtd</th>
+                <th class="td-right">V. Unit</th>
+                <th class="td-right">V. Total</th>
+                <th class="td-right">MC (R$)</th>
+                <th class="td-right">MC%</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>2781</td><td>Engenharia Serra Monteiro</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono" style="color:var(--red)">-R$ 84</td><td class="td-right td-mono" style="color:var(--red)">-12,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
+              <tr><td>2804</td><td>Vinicius</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono" style="color:var(--red)">-R$ 21</td><td class="td-right td-mono" style="color:var(--red)">-3,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
+              <tr><td>2817</td><td>Gustavo Henrique Alves</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono" style="color:var(--text3)">R$ 0</td><td class="td-right td-mono" style="color:var(--text3)">0,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
+              <tr><td>2850</td><td>Rafaela Rodrigues</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 300</td><td class="td-right td-mono">R$ 300</td><td class="td-right td-mono" style="color:var(--red)">-R$ 400</td><td class="td-right td-mono" style="color:var(--red)">-133,3%</td><td><span class="badge badge-red">Crítico</span></td></tr>
+              <tr><td>2851</td><td>Condomínio Euroville II</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">11</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 7.700</td><td class="td-right td-mono" style="color:var(--red)">-R$ 693</td><td class="td-right td-mono" style="color:var(--red)">-9,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== METAS ==================== -->
+    <div id="page-metas" class="page">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Metas de Margem de Contribuição</h1>
+          <p>Configuração e atingimento · Fev 2026</p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="grid-3">
+          <div class="card" style="border-top:3px solid var(--accent)">
+            <div class="card-header"><div class="card-title">Consumidor Final</div></div>
+            <div style="text-align:center;padding:8px 0">
+              <div style="font-size:42px;font-weight:600;font-family:'DM Mono',monospace;color:var(--amber)">51,8%</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:4px">Meta: 55,0% · Desvio: -3,2%</div>
+              <div class="progress-bar" style="margin-top:14px"><div class="progress-fill" style="width:94.2%;background:var(--amber)"></div></div>
+              <div style="font-size:11px;color:var(--text3);margin-top:6px">94,2% da meta atingida</div>
+            </div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--green)">
+            <div class="card-header"><div class="card-title">Pintor / Construtor / Arq.</div></div>
+            <div style="text-align:center;padding:8px 0">
+              <div style="font-size:42px;font-weight:600;font-family:'DM Mono',monospace;color:var(--amber)">43,0%</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:4px">Meta: 45,0% · Desvio: -2,0%</div>
+              <div class="progress-bar" style="margin-top:14px"><div class="progress-fill" style="width:95.6%;background:var(--amber)"></div></div>
+              <div style="font-size:11px;color:var(--text3);margin-top:6px">95,6% da meta atingida</div>
+            </div>
+          </div>
+          <div class="card" style="border-top:3px solid var(--blue)">
+            <div class="card-header"><div class="card-title">Lojista</div></div>
+            <div style="text-align:center;padding:8px 0">
+              <div style="font-size:42px;font-weight:600;font-family:'DM Mono',monospace;color:var(--red)">30,8%</div>
+              <div style="font-size:12px;color:var(--text3);margin-top:4px">Meta: 35,0% · Desvio: -4,2%</div>
+              <div class="progress-bar" style="margin-top:14px"><div class="progress-fill" style="width:88%;background:var(--red)"></div></div>
+              <div style="font-size:11px;color:var(--text3);margin-top:6px">88,0% da meta atingida</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">Distribuição de Status por Lançamento</div></div>
+          <div class="chart-wrap" style="height:260px">
+            <canvas id="chartStatus"></canvas>
+          </div>
+          <div style="display:flex;gap:20px;margin-top:12px;justify-content:center;flex-wrap:wrap">
+            <span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#2d7a4f;display:inline-block"></span>Meta Batida — 85 (55,9%)</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#b7791f;display:inline-block"></span>Atenção — 61 (40,1%)</span>
+            <span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#c0392b;display:inline-block"></span>Crítico — 6 (3,9%)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PAGAMENTOS ==================== -->
+    <div id="page-pagamentos" class="page">
+      <div class="topbar">
+        <div class="topbar-left">
+          <h1>Formas de Pagamento</h1>
+          <p>Distribuição do faturamento · Fev 2026</p>
+        </div>
+      </div>
+      <div class="content">
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-label">PIX (dominante)</div>
+            <div class="kpi-value sm">R$ 179.873</div>
+            <div class="kpi-meta"><span class="tag-up">71,8%</span> do faturamento</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Boleto</div>
+            <div class="kpi-value sm">R$ 48.329</div>
+            <div class="kpi-meta">19,3% do faturamento</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Cartão Crédito</div>
+            <div class="kpi-value sm">R$ 20.324</div>
+            <div class="kpi-meta">Link + Crédito: 8,1%</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">Outros</div>
+            <div class="kpi-value sm">R$ 1.869</div>
+            <div class="kpi-meta">Débito + Dinheiro + QR</div>
+          </div>
+        </div>
+
+        <div class="grid-2-even">
+          <div class="card">
+            <div class="card-header"><div class="card-title">Distribuição por Forma de Pagamento</div></div>
+            <div class="chart-wrap" style="height:260px">
+              <canvas id="chartPag"></canvas>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><div class="card-title">Detalhamento</div></div>
+            <div style="padding:4px 0">
+              <div class="pay-item">
+                <div class="pay-name">PIX</div>
+                <div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:71.8%;background:var(--accent)"></div></div>
+                <div class="pay-val td-mono">R$ 179.873 <span style="color:var(--text3)">71,8%</span></div>
+              </div>
+              <div class="pay-item">
+                <div class="pay-name">Boleto</div>
+                <div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:19.3%;background:var(--blue)"></div></div>
+                <div class="pay-val td-mono">R$ 48.329 <span style="color:var(--text3)">19,3%</span></div>
+              </div>
+              <div class="pay-item">
+                <div class="pay-name">Link Cartão Crédito</div>
+                <div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:4.1%;background:var(--green)"></div></div>
+                <div class="pay-val td-mono">R$ 10.165 <span style="color:var(--text3)">4,1%</span></div>
+              </div>
+              <div class="pay-item">
+                <div class="pay-name">Crédito</div>
+                <div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:4.1%;background:var(--green)"></div></div>
+                <div class="pay-val td-mono">R$ 10.160 <span style="color:var(--text3)">4,1%</span></div>
+              </div>
+              <div class="pay-item">
+                <div class="pay-name">Débito</div>
+                <div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:0.4%;background:var(--text3)"></div></div>
+                <div class="pay-val td-mono">R$ 1.057 <span style="color:var(--text3)">0,4%</span></div>
+              </div>
+              <div class="pay-item">
+                <div class="pay-name">PIX QR Code</div>
+                <div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:0.2%;background:var(--text3)"></div></div>
+                <div class="pay-val td-mono">R$ 432 <span style="color:var(--text3)">0,2%</span></div>
+              </div>
+              <div class="pay-item">
+                <div class="pay-name">Dinheiro</div>
+                <div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:0.15%;background:var(--text3)"></div></div>
+                <div class="pay-val td-mono">R$ 380 <span style="color:var(--text3)">0,2%</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ==================== DATA ====================
+const vendas = [
+  {pedido:2776,nf:'548',cliente:'Milton Ferreira de Carvalho',canal:'Pintor/Construtor/Arquiteto',produto:'CRISTAL MALDIVAS #20 PRIMER PALHA',qtd:5,vUnit:150,vTotal:750,custo:417.08,mc:332.92,mcPct:44.4,pag:'BOLETO'},
+  {pedido:2777,nf:'-',cliente:'Luciano Maia de Oliveira',canal:'Consumidor Final',produto:'CQ - Alecrim (Matte)',qtd:1,vUnit:183.65,vTotal:183.65,custo:36.65,mc:147,mcPct:80.0,pag:'CREDITO'},
+  {pedido:2778,nf:'-',cliente:'Giovana Perilo Arquitetura',canal:'Consumidor Final',produto:'FULL GRAY #20',qtd:2,vUnit:150,vTotal:300,custo:148.44,mc:151.56,mcPct:50.5,pag:'CREDITO'},
+  {pedido:2779,nf:'549',cliente:'DF Comércio de Tintas',canal:'Lojista',produto:'CRISTAL DUBAI #20',qtd:4,vUnit:102.7,vTotal:410.8,custo:321.36,mc:89.44,mcPct:21.8,pag:'PIX'},
+  {pedido:2779,nf:'549',cliente:'DF Comércio de Tintas',canal:'Lojista',produto:'PRIMER CRISTAL/GRANULADO - AREIA',qtd:2,vUnit:28.5,vTotal:57,custo:44.09,mc:12.91,mcPct:22.6,pag:'PIX'},
+  {pedido:2781,nf:'550',cliente:'Engenharia Serra Monteiro',canal:'Pintor/Construtor/Arquiteto',produto:'PISO DRENANTE - SEIXO CINZA',qtd:24,vUnit:190,vTotal:4560,custo:2355.6,mc:2204.4,mcPct:48.3,pag:'PIX'},
+  {pedido:2781,nf:'550',cliente:'Engenharia Serra Monteiro',canal:'Pintor/Construtor/Arquiteto',produto:'TELA DE FIBRA DE VIDRO (40x40MM)',qtd:1,vUnit:700,vTotal:700,custo:784,mc:-84,mcPct:-12.0,pag:'PIX'},
+  {pedido:2781,nf:'550',cliente:'Engenharia Serra Monteiro',canal:'Pintor/Construtor/Arquiteto',produto:'PU Primer Tix',qtd:1,vUnit:145,vTotal:145,custo:76.08,mc:68.92,mcPct:47.5,pag:'PIX'},
+  {pedido:2782,nf:'-',cliente:'Paulo Henrique Bessa dos Santos',canal:'Consumidor Final',produto:'CQ - Polar (Matte)',qtd:2,vUnit:160,vTotal:320,custo:62.97,mc:257.03,mcPct:80.3,pag:'PIX'},
+  {pedido:2783,nf:'551',cliente:'GR4 Comércio de Tintas Ltda',canal:'Lojista',produto:'CRISTAL DUBAI #20',qtd:7,vUnit:108,vTotal:756,custo:573.45,mc:182.55,mcPct:24.2,pag:'BOLETO'},
+  {pedido:2784,nf:'-',cliente:'Damião Almino de Lima',canal:'Pintor/Construtor/Arquiteto',produto:'GRANULADO / LAMATAM - PAPEL PICADO',qtd:4,vUnit:110,vTotal:440,custo:218.44,mc:221.56,mcPct:50.4,pag:'PIX'},
+  {pedido:2786,nf:'-',cliente:'Vanderlei Lima Mendanha',canal:'Pintor/Construtor/Arquiteto',produto:'CRISTAL MALDIVAS #20 PRIMER PALHA',qtd:4,vUnit:108,vTotal:432,custo:239.04,mc:192.96,mcPct:44.7,pag:'PIX'},
+  {pedido:2787,nf:'-',cliente:'Mercearia Vitoria',canal:'Consumidor Final',produto:'CRISTAL MALDIVAS #20 PRIMER PALHA',qtd:2,vUnit:170,vTotal:340,custo:122.02,mc:217.98,mcPct:64.1,pag:'DINHEIRO'},
+  {pedido:2788,nf:'-',cliente:'ATMA Recovery Ltda',canal:'Consumidor Final',produto:'CRISTAL POMPÉIA #10 PRIMER CAMURÇA',qtd:6,vUnit:170,vTotal:1020,custo:368.16,mc:651.84,mcPct:63.9,pag:'PIX'},
+  {pedido:2789,nf:'555',cliente:'Casa Grande Tintas Shego',canal:'Lojista',produto:'TAPETE DE PEDRA CAFÉ IMPERIAL #10',qtd:5,vUnit:198,vTotal:990,custo:690.35,mc:299.65,mcPct:30.3,pag:'BOLETO'},
+  {pedido:2790,nf:'554',cliente:'Decor Colors Jardim América',canal:'Lojista',produto:'CRISTAL DUBAI #20',qtd:4,vUnit:108,vTotal:432,custo:303.08,mc:128.92,mcPct:29.8,pag:'BOLETO'},
+  {pedido:2793,nf:'-',cliente:'Welton Silva Pintor',canal:'Pintor/Construtor/Arquiteto',produto:'CRISTAL MALDIVAS #20 PRIMER PALHA',qtd:10,vUnit:110,vTotal:1100,custo:610.1,mc:489.9,mcPct:44.5,pag:'PIX'},
+  {pedido:2800,nf:'-',cliente:'SANTRI SISTEMAS LTDA',canal:'Consumidor Final',produto:'CRISTAL DUBAI #20 FULL',qtd:10,vUnit:950,vTotal:9500,custo:2236.3,mc:7263.7,mcPct:76.5,pag:'PIX'},
+  {pedido:2804,nf:'-',cliente:'Vinicius',canal:'Consumidor Final',produto:'TELA DE FIBRA DE VIDRO (40x40MM)',qtd:1,vUnit:700,vTotal:700,custo:721,mc:-21,mcPct:-3.0,pag:'PIX'},
+  {pedido:2810,nf:'-',cliente:'Gustavo Henrique Alves',canal:'Consumidor Final',produto:'CRISTAL FULL GRAY',qtd:5,vUnit:1200,vTotal:6000,custo:2163.75,mc:3836.25,mcPct:63.9,pag:'PIX'},
+  {pedido:2817,nf:'-',cliente:'Gustavo Henrique Alves',canal:'Consumidor Final',produto:'TELA DE FIBRA DE VIDRO (40x40MM)',qtd:1,vUnit:700,vTotal:700,custo:700,mc:0,mcPct:0.0,pag:'PIX'},
+  {pedido:2820,nf:'-',cliente:'CONDOMÍNIO EUROVILLE II',canal:'Consumidor Final',produto:'CRISTAL MALDIVAS #20 (LOTE)',qtd:50,vUnit:1200,vTotal:60000,custo:29500,mc:30500,mcPct:50.8,pag:'PIX'},
+  {pedido:2824,nf:'-',cliente:'CONDOMÍNIO EUROVILLE II',canal:'Consumidor Final',produto:'PISO DRENANTE DIVERSAS CORES',qtd:40,vUnit:190,vTotal:7600,custo:3704,mc:3896,mcPct:51.3,pag:'PIX'},
+  {pedido:2830,nf:'-',cliente:'JAMES DE FREITAS CHAVES',canal:'Consumidor Final',produto:'CRISTAL DUBAI FULL PACK',qtd:25,vUnit:790,vTotal:19750,custo:10453.83,mc:9296.17,mcPct:47.1,pag:'PIX'},
+  {pedido:2835,nf:'-',cliente:'TEZA ENGENHARIA',canal:'Consumidor Final',produto:'PRIME PACK CONSTRUÇÃO',qtd:18,vUnit:783.67,vTotal:14106,custo:9020.97,mc:5085.03,mcPct:36.0,pag:'BOLETO'},
+  {pedido:2850,nf:'-',cliente:'Rafaela Rodrigues',canal:'Consumidor Final',produto:'TELA DE FIBRA DE VIDRO (40x40MM)',qtd:1,vUnit:300,vTotal:300,custo:700,mc:-400,mcPct:-133.3,pag:'PIX'},
+  {pedido:2851,nf:'-',cliente:'CONDOMÍNIO EUROVILLE II',canal:'Consumidor Final',produto:'TELA DE FIBRA DE VIDRO (40x40MM)',qtd:11,vUnit:700,vTotal:7700,custo:8393,mc:-693,mcPct:-9.0,pag:'PIX'},
+  {pedido:2855,nf:'-',cliente:'Rafaela Rodrigues',canal:'Consumidor Final',produto:'CRISTAL POMPÉIA #10 PREMIER',qtd:8,vUnit:182.5,vTotal:1460,custo:481.96,mc:978.04,mcPct:67.0,pag:'PIX'},
+  {pedido:2860,nf:'-',cliente:'PRECISAO COMERCIO DE TINTAS',canal:'Lojista',produto:'CRISTAL DUBAI #20 LOTE',qtd:12,vUnit:108,vTotal:1296,custo:909.36,mc:386.64,mcPct:29.8,pag:'BOLETO'},
+];
+
+// ==================== NAVIGATION ====================
+function navigate(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  if (el) {
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    el.classList.add('active');
+  }
+  if (page === 'lancamentos') renderTable(vendas);
+  if (page === 'canais') renderCanalCharts();
+  if (page === 'metas') renderStatusChart();
+  if (page === 'pagamentos') renderPagChart();
+}
+
+// ==================== TABLE ====================
+function getStatusBadge(mc) {
+  if (mc < 10) return '<span class="badge badge-red">Crítico</span>';
+  if (mc < 35) return '<span class="badge badge-amber">Atenção</span>';
+  return '<span class="badge badge-green">Meta Batida</span>';
+}
+
+function renderTable(data) {
+  const tbody = document.getElementById('tbodyVendas');
+  document.getElementById('filterCount').textContent = data.length + ' resultados';
+  tbody.innerHTML = data.map(r => `
+    <tr>
+      <td class="td-mono">${r.pedido}</td>
+      <td>${r.nf}</td>
+      <td>${r.cliente}</td>
+      <td><span class="badge badge-gray" style="font-size:10px">${r.canal.replace('/Construtor/Arquiteto','')}</span></td>
+      <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.produto}">${r.produto}</td>
+      <td class="td-right td-mono">${r.qtd}</td>
+      <td class="td-right td-mono">R$ ${r.vUnit.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+      <td class="td-right td-mono">R$ ${r.vTotal.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+      <td class="td-right td-mono" style="color:${r.mc < 0 ? 'var(--red)' : 'inherit'}">R$ ${r.mc.toLocaleString('pt-BR',{minimumFractionDigits:2})}</td>
+      <td class="td-right td-mono" style="color:${r.mcPct < 10 ? 'var(--red)' : r.mcPct < 35 ? 'var(--amber)' : 'var(--green)'}">${r.mcPct.toFixed(1)}%</td>
+      <td><span class="badge badge-blue" style="font-size:10px">${r.pag}</span></td>
+      <td>${getStatusBadge(r.mcPct)}</td>
+    </tr>
+  `).join('');
+}
+
+function filterTable() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const canal = document.getElementById('filterCanal').value;
+  const status = document.getElementById('filterStatus').value;
+  const filtered = vendas.filter(r => {
+    const matchSearch = !search || r.cliente.toLowerCase().includes(search) || r.produto.toLowerCase().includes(search);
+    const matchCanal = !canal || r.canal === canal;
+    const matchStatus = !status || (
+      status === 'Crítico' ? r.mcPct < 10 :
+      status === 'Atenção' ? (r.mcPct >= 10 && r.mcPct < 35) :
+      r.mcPct >= 35
+    );
+    return matchSearch && matchCanal && matchStatus;
+  });
+  renderTable(filtered);
+}
+
+// ==================== CHARTS ====================
+let charts = {};
+function destroyChart(id) { if (charts[id]) { charts[id].destroy(); delete charts[id]; } }
+
+// Dashboard charts
+window.addEventListener('load', () => {
+  // Canal fat donut
+  destroyChart('canal');
+  charts['canal'] = new Chart(document.getElementById('chartCanal'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Consumidor Final', 'Pintor/Construtor', 'Lojista'],
+      datasets: [{
+        data: [178488, 44270, 27638],
+        backgroundColor: ['#c8a96e','#2d7a4f','#1a56a0'],
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      cutout: '65%'
+    }
+  });
+
+  // MC bar
+  destroyChart('mc');
+  charts['mc'] = new Chart(document.getElementById('chartMC'), {
+    type: 'bar',
+    data: {
+      labels: ['Consumidor Final','Pintor/Construtor','Lojista'],
+      datasets: [
+        { label: 'MC Realizada (%)', data: [51.8, 43.0, 30.8], backgroundColor: ['#c8a96e','#2d7a4f','#1a56a0'], borderRadius: 5 },
+        { label: 'Meta (%)', data: [55, 45, 35], backgroundColor: 'transparent', borderColor: '#9c9890', borderWidth: 2, type: 'line', pointRadius: 5, pointBackgroundColor: '#9c9890' }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { grid: { color: '#e5e2da' }, ticks: { callback: v => v + '%', color: '#6b6760', font: { size: 11 } }, suggestedMax: 70 },
+        x: { grid: { display: false }, ticks: { color: '#6b6760', font: { size: 10 } } }
+      }
+    }
+  });
+});
+
+function renderCanalCharts() {
+  setTimeout(() => {
+    destroyChart('canalfat');
+    charts['canalfat'] = new Chart(document.getElementById('chartCanalFat'), {
+      type: 'bar',
+      data: {
+        labels: ['Consumidor Final','Pintor/Construtor/Arq.','Lojista'],
+        datasets: [{
+          label: 'Faturamento',
+          data: [178488, 44270, 27638],
+          backgroundColor: ['#c8a96e','#2d7a4f','#1a56a0'],
+          borderRadius: 6
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { grid: { color: '#e5e2da' }, ticks: { callback: v => 'R$ '+(v/1000).toFixed(0)+'k', color: '#6b6760', font:{size:11} } },
+          x: { grid: { display: false }, ticks: { color: '#6b6760', font:{size:10} } }
+        }
+      }
+    });
+
+    destroyChart('canalmeta');
+    charts['canalmeta'] = new Chart(document.getElementById('chartCanalMeta'), {
+      type: 'bar',
+      data: {
+        labels: ['Consumidor Final','Pintor/Construtor/Arq.','Lojista'],
+        datasets: [
+          { label: 'Realizado', data: [51.8, 43.0, 30.8], backgroundColor: ['#c8a96e','#2d7a4f','#1a56a0'], borderRadius: 6 },
+          { label: 'Meta', data: [55, 45, 35], backgroundColor: 'transparent', borderColor: '#c0392b', borderWidth: 2, type: 'line', pointRadius: 5, pointBackgroundColor: '#c0392b' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { grid: { color: '#e5e2da' }, ticks: { callback: v => v+'%', color: '#6b6760', font:{size:11} }, suggestedMax: 70 },
+          x: { grid: { display: false }, ticks: { color: '#6b6760', font:{size:10} } }
+        }
+      }
+    });
+  }, 50);
+}
+
+function renderStatusChart() {
+  setTimeout(() => {
+    destroyChart('status');
+    charts['status'] = new Chart(document.getElementById('chartStatus'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Meta Batida','Atenção','Crítico'],
+        datasets: [{
+          data: [85, 61, 6],
+          backgroundColor: ['#2d7a4f','#b7791f','#c0392b'],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        cutout: '60%'
+      }
+    });
+  }, 50);
+}
+
+function renderPagChart() {
+  setTimeout(() => {
+    destroyChart('pag');
+    charts['pag'] = new Chart(document.getElementById('chartPag'), {
+      type: 'doughnut',
+      data: {
+        labels: ['PIX','Boleto','Link Cartão','Crédito','Outros'],
+        datasets: [{
+          data: [179873, 48329, 10165, 10160, 1869],
+          backgroundColor: ['#c8a96e','#1a56a0','#2d7a4f','#b7791f','#9c9890'],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        cutout: '60%'
+      }
+    });
+  }, 50);
+}
+</script>
+</body>
+</html>
