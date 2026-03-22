@@ -723,9 +723,8 @@ function renderLancamentos(){
 
   const tbody=document.getElementById('tbodyLanc');
   if(!grouped){
-    tbody.innerHTML=data.map(r=>rowHTML(r)).join('');
+    tbody.innerHTML=data.map(r=>rowHTML(r, LANCAMENTOS.indexOf(r))).join('');
   }else{
-    // Group by pedido
     const pedidos={};
     data.forEach(r=>{if(!pedidos[r.pedido])pedidos[r.pedido]=[];pedidos[r.pedido].push(r);});
     let html='';
@@ -734,16 +733,14 @@ function renderLancamentos(){
       const fatP=items.reduce((a,r)=>a+r.vTotal,0);
       const mcP=items.reduce((a,r)=>a+r.mc_r,0);
       const mcPct=fatP>0?((mcP/fatP)*100).toFixed(1):0;
-      const cliente=items[0].cliente;
-      const canal=items[0].tipo;
-      html+=`<tr class="group-header"><td colspan="24">Pedido ${ped} · ${cliente} · ${canal} · Fat: R$ ${fmt(fatP)} · MC: R$ ${fmt(mcP)} (${mcPct}%)</td></tr>`;
-      items.forEach(r=>{html+=rowHTML(r,true);});
+      html+=`<tr class="group-header"><td colspan="24">Pedido ${ped} · ${items[0].cliente} · ${items[0].tipo} · Fat: R$ ${fmt(fatP)} · MC: R$ ${fmt(mcP)} (${mcPct}%)</td></tr>`;
+      items.forEach(r=>{html+=rowHTML(r, LANCAMENTOS.indexOf(r));});
     });
     tbody.innerHTML=html;
   }
 }
 
-function rowHTML(r, indent=false){
+function rowHTML(r, idx){
   const mcColor=r.mc_p<0?'var(--red)':r.mc_p<r.meta?'var(--amber)':'var(--green)';
   const vazIcon=r.vazamento?'<span style="color:var(--red);font-weight:600">⚠ VAZ</span>':'';
   const statusBadge=r.status==='Meta Batida'?'<span class="badge badge-green">Meta Batida</span>':r.status==='Atenção'?'<span class="badge badge-amber">Atenção</span>':'<span class="badge badge-red">Crítico</span>';
@@ -778,7 +775,7 @@ function rowHTML(r, indent=false){
     <td class="td-right td-mono" style="color:${desvioColor}">${r.desvio>=0?'+':''}${r.desvio.toFixed(1)}%</td>
     <td class="td-center">${statusBadge}</td>
     <td class="td-center">${vazIcon}</td>
-    <td class="td-center"><button class="btn-edit" onclick="abrirEdicao(${LANCAMENTOS.findIndex(x=>x.pedido===r.pedido&&x.produto===r.produto&&x.cliente===r.cliente)}" title="Editar lançamento">✏</button></td>
+    <td class="td-center"><button class="btn-edit" onclick="abrirEdicao(${idx})" title="Editar lançamento">✏</button></td>
   </tr>`;
 }
 
