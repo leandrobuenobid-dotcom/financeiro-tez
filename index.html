@@ -262,31 +262,37 @@ tbody tr:hover td{background:var(--surface2)}
 <!-- ===== DASHBOARD ===== -->
 <div id="page-dashboard" class="page active">
   <div class="topbar">
-    <div class="topbar-left"><h1>Dashboard Executivo</h1><p>Fevereiro 2026 · Tez Revestimentos</p></div>
+    <div class="topbar-left">
+      <h1>Dashboard Executivo</h1>
+      <p id="db-subtitle">Carregando...</p>
+    </div>
     <div class="topbar-right">
       <button class="btn" onclick="nav('lancamentos',null)">Ver Lançamentos</button>
       <button class="btn btn-gold" onclick="nav('novo',null)">+ Novo Lançamento</button>
     </div>
   </div>
   <div class="content">
-    <div class="alert-box alert-gold">
+    <!-- Alert dinâmico -->
+    <div class="alert-box alert-gold" id="db-alert">
       <div class="alert-icon">◈</div>
       <div>
-        <div class="alert-title" style="color:var(--accent-dark)">Resumo Executivo — Fevereiro 2026</div>
-        <div class="alert-text">Faturamento de <strong>R$ 250.395</strong> com margem de contribuição de <strong>47,9%</strong>. Meta mensal de R$ 300.000 — atingimento de <strong>83,5%</strong>. 6 itens com vazamento de margem detectados.</div>
+        <div class="alert-title" style="color:var(--accent-dark)" id="db-alert-title">Carregando...</div>
+        <div class="alert-text" id="db-alert-text"></div>
       </div>
     </div>
+    <!-- KPIs dinâmicos -->
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">Faturamento Total</div><div class="kpi-value" style="font-size:20px">R$ 250.395</div><div class="kpi-meta"><span class="tag-warn">83,5%</span> da meta mensal</div></div>
-      <div class="kpi-card"><div class="kpi-label">MC Total (R$)</div><div class="kpi-value" style="font-size:20px">R$ 120.012</div><div class="kpi-meta"><span class="tag-up">47,9%</span> sobre faturamento</div></div>
-      <div class="kpi-card"><div class="kpi-label">Pedidos / Itens</div><div class="kpi-value" style="font-size:20px">81 / 151</div><div class="kpi-meta">pedidos · lançamentos</div></div>
-      <div class="kpi-card"><div class="kpi-label">Gap vs Meta</div><div class="kpi-value" style="font-size:20px;color:var(--red)">-R$ 49.605</div><div class="kpi-meta"><span class="tag-down">Abaixo</span> da meta R$ 300.000</div></div>
+      <div class="kpi-card"><div class="kpi-label">Faturamento Total</div><div class="kpi-value" id="db-fat" style="font-size:20px">—</div><div class="kpi-meta" id="db-fat-meta">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">MC Total (R$)</div><div class="kpi-value" id="db-mc" style="font-size:20px">—</div><div class="kpi-meta" id="db-mc-meta">—</div></div>
+      <div class="kpi-card"><div class="kpi-label">Pedidos / Itens</div><div class="kpi-value" id="db-ped" style="font-size:20px">—</div><div class="kpi-meta">pedidos · lançamentos</div></div>
+      <div class="kpi-card"><div class="kpi-label">Gap vs Meta</div><div class="kpi-value" id="db-gap" style="font-size:20px">—</div><div class="kpi-meta" id="db-gap-meta">—</div></div>
     </div>
+    <!-- Status pills dinâmicos -->
     <div class="status-pills">
-      <div class="status-pill"><div class="status-pill-dot" style="background:var(--green)"></div><div><div class="status-pill-val" style="color:var(--green)">85</div><div class="status-pill-label">Meta Batida</div></div></div>
-      <div class="status-pill"><div class="status-pill-dot" style="background:var(--amber)"></div><div><div class="status-pill-val" style="color:var(--amber)">60</div><div class="status-pill-label">Atenção</div></div></div>
-      <div class="status-pill"><div class="status-pill-dot" style="background:var(--red)"></div><div><div class="status-pill-val" style="color:var(--red)">6</div><div class="status-pill-label">Crítico</div></div></div>
-      <div class="status-pill" style="min-width:220px"><div><div class="status-pill-val" style="font-size:16px">PIX dominante</div><div class="status-pill-label">71,8% das vendas por PIX</div></div></div>
+      <div class="status-pill"><div class="status-pill-dot" style="background:var(--green)"></div><div><div class="status-pill-val" id="db-ok" style="color:var(--green)">—</div><div class="status-pill-label">Meta Batida</div></div></div>
+      <div class="status-pill"><div class="status-pill-dot" style="background:var(--amber)"></div><div><div class="status-pill-val" id="db-at" style="color:var(--amber)">—</div><div class="status-pill-label">Atenção</div></div></div>
+      <div class="status-pill"><div class="status-pill-dot" style="background:var(--red)"></div><div><div class="status-pill-val" id="db-cr" style="color:var(--red)">—</div><div class="status-pill-label">Crítico</div></div></div>
+      <div class="status-pill" style="min-width:220px"><div><div class="status-pill-val" id="db-pix-label" style="font-size:16px">—</div><div class="status-pill-label" id="db-pix-sub">—</div></div></div>
     </div>
     <div class="grid-2">
       <div class="card">
@@ -299,33 +305,20 @@ tbody tr:hover td{background:var(--surface2)}
         </div>
       </div>
       <div class="card">
-        <div class="card-header"><div><div class="card-title">Meta de Faturamento</div><div class="card-sub">Progresso vs meta mensal R$ 300.000</div></div></div>
+        <div class="card-header"><div><div class="card-title">Meta de Faturamento</div><div class="card-sub" id="db-meta-sub">—</div></div></div>
         <div class="gauge-wrap">
-          <div class="gauge-pct">83,5%</div>
-          <div class="gauge-label">R$ 250.395 de R$ 300.000</div>
-          <div class="gauge-bar-wrap"><div class="gauge-bar-fill" style="width:83.5%"></div></div>
+          <div class="gauge-pct" id="db-gauge-pct">—%</div>
+          <div class="gauge-label" id="db-gauge-label">—</div>
+          <div class="gauge-bar-wrap"><div class="gauge-bar-fill" id="db-gauge-fill" style="width:0%"></div></div>
         </div>
-        <div style="margin-top:20px">
-          <div class="canal-item"><div class="canal-header"><span class="canal-name">Consumidor Final</span><span class="canal-values">R$ 178.488 · <strong style="color:var(--green)">MC 51,8%</strong></span></div><div class="progress-bar"><div class="progress-fill" style="width:71.3%;background:var(--accent)"></div></div></div>
-          <div class="canal-item"><div class="canal-header"><span class="canal-name">Pintor/Construtor/Arq.</span><span class="canal-values">R$ 44.270 · <strong style="color:var(--amber)">MC 43,0%</strong></span></div><div class="progress-bar"><div class="progress-fill" style="width:17.7%;background:var(--amber)"></div></div></div>
-          <div class="canal-item"><div class="canal-header"><span class="canal-name">Lojista</span><span class="canal-values">R$ 27.638 · <strong style="color:var(--red)">MC 30,8%</strong></span></div><div class="progress-bar"><div class="progress-fill" style="width:11%;background:var(--red)"></div></div></div>
-        </div>
+        <div style="margin-top:20px" id="db-canais-list"></div>
       </div>
     </div>
     <div class="grid-2">
       <div class="card">
         <div class="card-header"><div><div class="card-title">Top 8 Clientes por Faturamento</div></div><div class="card-link" onclick="nav('clientes',null)">Ver todos →</div></div>
         <div class="table-wrap"><table><thead><tr><th>Cliente</th><th class="td-right">Fat (R$)</th><th class="td-right">MC%</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>Condomínio Euroville II</td><td class="td-right td-mono">111.491</td><td class="td-right td-mono">48,5%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-          <tr><td>James de Freitas Chaves</td><td class="td-right td-mono">19.750</td><td class="td-right td-mono">47,1%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-          <tr><td>Teza Engenharia</td><td class="td-right td-mono">14.106</td><td class="td-right td-mono">36,0%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-          <tr><td>Santri Sistemas Ltda</td><td class="td-right td-mono">9.500</td><td class="td-right td-mono">76,5%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
-          <tr><td>Gustavo Henrique Alves</td><td class="td-right td-mono">8.620</td><td class="td-right td-mono">60,0%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
-          <tr><td>Precisão Comércio Tintas</td><td class="td-right td-mono">8.518</td><td class="td-right td-mono">27,8%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-          <tr><td>Engenharia Serra Monteiro</td><td class="td-right td-mono">5.790</td><td class="td-right td-mono">49,4%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-          <tr><td>Art Colors Tintas</td><td class="td-right td-mono">5.610</td><td class="td-right td-mono">36,9%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        </tbody></table></div>
+        <tbody id="db-clientes-tbody"></tbody></table></div>
       </div>
       <div class="card">
         <div class="card-header"><div><div class="card-title">MC% Realizada vs Meta</div></div></div>
@@ -826,6 +819,7 @@ async function carregarDados() {
     mostrarToast('Erro ao conectar ao Sheets — exibindo dados locais', 'red');
   }
   mostrarLoading(false);
+  renderDashboard();
   renderLancamentos();
 }
 
@@ -907,12 +901,172 @@ const LANCAMENTOS = [{"pedido": 2776, "nf": "548", "cliente": "Milton Ferreira d
 
 const META = {"Consumidor Final":55,"Lojista":35,"Pintor/Construtor/Arquiteto":45};
 
-// ======= NAV =======
+// ======= DASHBOARD DINÂMICO =======
+function renderDashboard() {
+  const data = LANCAMENTOS;
+  const mesLabel = getMesLabel();
+  const META_FAT = 300000;
+
+  // KPIs base
+  const fat     = data.reduce((a,r) => a + r.vTotal, 0);
+  const mc      = data.reduce((a,r) => a + r.mc_r, 0);
+  const mcPct   = fat > 0 ? (mc/fat)*100 : 0;
+  const gap     = fat - META_FAT;
+  const ating   = fat > 0 ? (fat/META_FAT)*100 : 0;
+  const nItens  = data.length;
+  const nPed    = new Set(data.map(r => r.pedido)).size;
+
+  // Status counts
+  const nOk  = data.filter(r => r.status === 'Meta Batida').length;
+  const nAt  = data.filter(r => r.status === 'Atenção').length;
+  const nCr  = data.filter(r => r.status === 'Crítico').length;
+
+  // PIX
+  const fatPix  = data.filter(r => r.pag && r.pag.toUpperCase().includes('PIX')).reduce((a,r) => a+r.vTotal, 0);
+  const pixPct  = fat > 0 ? (fatPix/fat)*100 : 0;
+
+  // Por canal
+  const canais = {};
+  data.forEach(r => {
+    if (!canais[r.tipo]) canais[r.tipo] = {fat:0, mc:0};
+    canais[r.tipo].fat += r.vTotal;
+    canais[r.tipo].mc  += r.mc_r;
+  });
+
+  // Top clientes
+  const clisMap = {};
+  data.forEach(r => {
+    if (!clisMap[r.cliente]) clisMap[r.cliente] = {fat:0, mc:0, tipo:r.tipo};
+    clisMap[r.cliente].fat += r.vTotal;
+    clisMap[r.cliente].mc  += r.mc_r;
+  });
+  const topClis = Object.entries(clisMap).sort((a,b) => b[1].fat - a[1].fat).slice(0,8);
+
+  const fR = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+  const p1 = v => v.toFixed(1) + '%';
+
+  // Subtitle
+  const sub = document.getElementById('db-subtitle');
+  if (sub) sub.textContent = `${mesLabel} · Tez Revestimentos`;
+
+  // Alert
+  const atTag = document.getElementById('db-alert-title');
+  const atTxt = document.getElementById('db-alert-text');
+  if (atTag) atTag.textContent = `Resumo Executivo — ${mesLabel}`;
+  if (atTxt) {
+    if (data.length === 0) {
+      atTxt.innerHTML = `Nenhum lançamento registrado em <strong>${mesLabel}</strong> ainda. Use "+ Novo Lançamento" para começar.`;
+    } else {
+      atTxt.innerHTML = `Faturamento de <strong>${fR(fat)}</strong> com margem de contribuição de <strong>${p1(mcPct)}</strong>. Meta mensal de ${fR(META_FAT)} — atingimento de <strong>${p1(ating)}</strong>. ${nCr} ${nCr===1?'item':'itens'} com vazamento de margem detectado${nCr!==1?'s':''}.`;
+    }
+  }
+
+  // KPIs
+  const tagColor = ating >= 100 ? 'tag-up' : ating >= 70 ? 'tag-warn' : 'tag-down';
+  document.getElementById('db-fat').textContent      = fR(fat);
+  document.getElementById('db-fat-meta').innerHTML   = `<span class="${tagColor}">${p1(ating)}</span> da meta mensal`;
+  document.getElementById('db-mc').textContent       = fR(mc);
+  document.getElementById('db-mc-meta').innerHTML    = `<span class="${mcPct>=40?'tag-up':'tag-warn'}">${p1(mcPct)}</span> sobre faturamento`;
+  document.getElementById('db-ped').textContent      = `${nPed} / ${nItens}`;
+  const gapEl = document.getElementById('db-gap');
+  gapEl.textContent = (gap >= 0 ? '+' : '') + fR(gap);
+  gapEl.style.color = gap >= 0 ? 'var(--green)' : 'var(--red)';
+  document.getElementById('db-gap-meta').innerHTML   = gap >= 0
+    ? `<span class="tag-up">Acima</span> da meta ${fR(META_FAT)}`
+    : `<span class="tag-down">Abaixo</span> da meta ${fR(META_FAT)}`;
+
+  // Status pills
+  document.getElementById('db-ok').textContent = nOk;
+  document.getElementById('db-at').textContent = nAt;
+  document.getElementById('db-cr').textContent = nCr;
+  document.getElementById('db-pix-label').textContent = pixPct >= 50 ? 'PIX dominante' : 'Pagamentos variados';
+  document.getElementById('db-pix-sub').textContent   = p1(pixPct) + ' das vendas por PIX';
+
+  // Gauge meta
+  const gaugePct = Math.min(ating, 100);
+  document.getElementById('db-gauge-pct').textContent  = p1(ating);
+  document.getElementById('db-gauge-label').textContent = `${fR(fat)} de ${fR(META_FAT)}`;
+  document.getElementById('db-gauge-fill').style.width  = gaugePct + '%';
+  document.getElementById('db-meta-sub').textContent    = `Progresso vs meta mensal ${fR(META_FAT)}`;
+
+  // Canais list
+  const canalNames = {
+    'Consumidor Final': {cor:'var(--accent)', label:'Consumidor Final'},
+    'Pintor/Construtor/Arquiteto': {cor:'var(--amber)', label:'Pintor/Construtor/Arq.'},
+    'Lojista': {cor:'var(--red)', label:'Lojista'}
+  };
+  const canalList = document.getElementById('db-canais-list');
+  if (canalList) {
+    canalList.innerHTML = Object.entries(canalNames).map(([key, cfg]) => {
+      const c   = canais[key] || {fat:0, mc:0};
+      const pct = fat > 0 ? (c.fat/fat)*100 : 0;
+      const mcC = c.fat > 0 ? (c.mc/c.fat)*100 : 0;
+      const mcColor = mcC >= 50 ? 'var(--green)' : mcC >= 35 ? 'var(--amber)' : 'var(--red)';
+      return `<div class="canal-item">
+        <div class="canal-header">
+          <span class="canal-name">${cfg.label}</span>
+          <span class="canal-values">${fR(c.fat)} · <strong style="color:${mcColor}">MC ${p1(mcC)}</strong></span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" style="width:${pct}%;background:${cfg.cor}"></div></div>
+      </div>`;
+    }).join('');
+  }
+
+  // Top clientes
+  const tbody = document.getElementById('db-clientes-tbody');
+  if (tbody) {
+    tbody.innerHTML = topClis.map(([nome, d]) => {
+      const mcP = d.fat > 0 ? (d.mc/d.fat)*100 : 0;
+      const badge = mcP >= (META[d.tipo]||35)
+        ? '<span class="badge badge-green">Meta Batida</span>'
+        : mcP >= 10
+          ? '<span class="badge badge-amber">Atenção</span>'
+          : '<span class="badge badge-red">Crítico</span>';
+      return `<tr>
+        <td title="${nome}">${nome.length>30?nome.slice(0,28)+'…':nome}</td>
+        <td class="td-right td-mono">${Math.round(d.fat).toLocaleString('pt-BR')}</td>
+        <td class="td-right td-mono">${p1(mcP)}</td>
+        <td>${badge}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Charts
+  const cConsumidor = canais['Consumidor Final']?.fat || 0;
+  const cPintor     = canais['Pintor/Construtor/Arquiteto']?.fat || 0;
+  const cLojista    = canais['Lojista']?.fat || 0;
+  const mcConsumidor = canais['Consumidor Final']   ? (canais['Consumidor Final'].mc   / canais['Consumidor Final'].fat  )*100 : 0;
+  const mcPintor     = canais['Pintor/Construtor/Arquiteto'] ? (canais['Pintor/Construtor/Arquiteto'].mc / canais['Pintor/Construtor/Arquiteto'].fat)*100 : 0;
+  const mcLojista    = canais['Lojista']            ? (canais['Lojista'].mc             / canais['Lojista'].fat           )*100 : 0;
+
+  dc('canal');
+  charts['canal'] = new Chart(document.getElementById('chartCanal'), {
+    type: 'doughnut',
+    data: { labels:['Consumidor Final','Pintor/Construtor','Lojista'], datasets:[{ data:[cConsumidor, cPintor, cLojista], backgroundColor:['#c8a96e','#2d7a4f','#1a56a0'], borderWidth:0, hoverOffset:8 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, cutout:'65%' }
+  });
+
+  dc('mc');
+  charts['mc'] = new Chart(document.getElementById('chartMC'), {
+    type: 'bar',
+    data: {
+      labels: ['Consumidor Final','Pintor/Construtor','Lojista'],
+      datasets: [
+        { label:'MC%', data:[mcConsumidor, mcPintor, mcLojista].map(v=>parseFloat(v.toFixed(1))), backgroundColor:['#c8a96e','#2d7a4f','#1a56a0'], borderRadius:5 },
+        { label:'Meta', data:[55,45,35], type:'scatter', pointRadius:8, pointHoverRadius:10, pointBackgroundColor:'#c0392b', pointBorderColor:'#fff', pointBorderWidth:2, backgroundColor:'transparent', borderColor:'transparent', showLine:false }
+      ]
+    },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{grid:{color:'#e5e2da'},ticks:{callback:v=>v+'%',color:'#6b6760',font:{size:11}},suggestedMax:70},x:{grid:{display:false},ticks:{color:'#6b6760',font:{size:10}}}} }
+  });
+}
+
+// ======= NAVIGATION =======
 let grouped = false;
 function nav(page, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   if(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
+  if(page==='dashboard') renderDashboard();
   if(page==='lancamentos') renderLancamentos();
   if(page==='canais') renderCanalCharts();
   if(page==='metas') renderStatusChart();
