@@ -417,6 +417,7 @@ tbody tr:hover td{background:var(--surface2)}
               <th class="td-center" style="min-width:90px;background:#f0f5ed;color:var(--green)">Status</th>
               <th class="td-center" style="min-width:65px;background:#f0f5ed;color:var(--green)">Vaza-<br>mento</th>
               <th style="min-width:50px;background:#f0f5ed"></th>
+              <th style="min-width:50px;background:#fff5f5"></th>
             </tr>
           </thead>
           <tbody id="tbodyLanc"></tbody>
@@ -524,15 +525,11 @@ tbody tr:hover td{background:var(--surface2)}
 </div>
 
 <!-- ===== CANAIS ===== -->
+<!-- ===== CANAIS ===== -->
 <div id="page-canais" class="page">
-  <div class="topbar"><div class="topbar-left"><h1>Canais de Venda</h1><p>Performance por tipo de cliente · Fev 2026</p></div></div>
+  <div class="topbar"><div class="topbar-left"><h1>Canais de Venda</h1><p id="canais-subtitle">—</p></div></div>
   <div class="content">
-    <div class="kpi-grid">
-      <div class="kpi-card" style="border-top:3px solid var(--accent)"><div class="kpi-label">Consumidor Final</div><div class="kpi-value" style="font-size:18px">R$ 178.488</div><div class="kpi-meta">29 pedidos · <span class="tag-up">MC 51,8%</span></div></div>
-      <div class="kpi-card" style="border-top:3px solid var(--green)"><div class="kpi-label">Pintor/Construtor/Arq.</div><div class="kpi-value" style="font-size:18px">R$ 44.270</div><div class="kpi-meta">29 pedidos · <span class="tag-warn">MC 43,0%</span></div></div>
-      <div class="kpi-card" style="border-top:3px solid var(--blue)"><div class="kpi-label">Lojista</div><div class="kpi-value" style="font-size:18px">R$ 27.638</div><div class="kpi-meta">22 pedidos · <span class="tag-down">MC 30,8%</span></div></div>
-      <div class="kpi-card" style="border-top:3px solid var(--border2)"><div class="kpi-label">Total Geral</div><div class="kpi-value" style="font-size:18px">R$ 250.395</div><div class="kpi-meta">81 pedidos · <span class="tag-up">MC 47,9%</span></div></div>
-    </div>
+    <div class="kpi-grid" id="canais-kpis"></div>
     <div class="grid-2-even">
       <div class="card"><div class="card-header"><div class="card-title">Faturamento por Canal</div></div><div class="chart-wrap" style="height:260px"><canvas id="chartCanalFat"></canvas></div></div>
       <div class="card"><div class="card-header"><div class="card-title">MC% vs Meta por Canal</div></div><div class="chart-wrap" style="height:260px"><canvas id="chartCanalMeta"></canvas></div></div>
@@ -540,102 +537,57 @@ tbody tr:hover td{background:var(--surface2)}
     <div class="card">
       <div class="card-header"><div class="card-title">Detalhamento</div></div>
       <table><thead><tr><th>Canal</th><th class="td-right">Pedidos</th><th class="td-right">Faturamento</th><th class="td-right">MC (R$)</th><th class="td-right">MC%</th><th class="td-right">Meta MC%</th><th class="td-right">Desvio</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td><strong>Consumidor Final</strong></td><td class="td-right">29</td><td class="td-right td-mono">R$ 178.488</td><td class="td-right td-mono">R$ 92.473</td><td class="td-right td-mono"><strong>51,8%</strong></td><td class="td-right td-mono">55,0%</td><td class="td-right td-mono" style="color:var(--amber)">-3,2%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        <tr><td><strong>Pintor/Construtor/Arq.</strong></td><td class="td-right">29</td><td class="td-right td-mono">R$ 44.270</td><td class="td-right td-mono">R$ 19.029</td><td class="td-right td-mono"><strong>43,0%</strong></td><td class="td-right td-mono">45,0%</td><td class="td-right td-mono" style="color:var(--amber)">-2,0%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        <tr><td><strong>Lojista</strong></td><td class="td-right">22</td><td class="td-right td-mono">R$ 27.638</td><td class="td-right td-mono">R$ 8.510</td><td class="td-right td-mono"><strong>30,8%</strong></td><td class="td-right td-mono">35,0%</td><td class="td-right td-mono" style="color:var(--red)">-4,2%</td><td><span class="badge badge-red">Abaixo da meta</span></td></tr>
-      </tbody></table>
+      <tbody id="canais-tbody"></tbody></table>
     </div>
   </div>
 </div>
 
 <!-- ===== CLIENTES ===== -->
 <div id="page-clientes" class="page">
-  <div class="topbar"><div class="topbar-left"><h1>Top Clientes</h1><p>Ranking por faturamento · Fev 2026</p></div></div>
+  <div class="topbar"><div class="topbar-left"><h1>Top Clientes</h1><p id="clientes-subtitle">—</p></div></div>
   <div class="content">
-    <div class="alert-box alert-gold"><div class="alert-icon">◈</div><div><div class="alert-title" style="color:var(--accent-dark)">Concentração de receita</div><div class="alert-text">O <strong>Condomínio Euroville II</strong> representa <strong>44,5% do faturamento total</strong> (R$ 111.491). Alta concentração — risco elevado de oscilação de resultado.</div></div></div>
+    <div class="alert-box alert-gold"><div class="alert-icon">◈</div><div><div class="alert-title" style="color:var(--accent-dark)" id="clientes-alert-title">—</div><div class="alert-text" id="clientes-alert-text">—</div></div></div>
     <div class="card">
-      <div class="card-header"><div class="card-title">Ranking — Fevereiro 2026</div></div>
+      <div class="card-header"><div class="card-title" id="clientes-ranking-title">Ranking</div></div>
       <table><thead><tr><th>#</th><th>Cliente</th><th>Canal</th><th class="td-right">Faturamento</th><th class="td-right">MC (R$)</th><th class="td-right">MC%</th><th class="td-right">% Fat. Total</th><th>Status</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td><strong>Condomínio Euroville II</strong></td><td>Consumidor Final</td><td class="td-right td-mono">R$ 111.491</td><td class="td-right td-mono">R$ 54.090</td><td class="td-right td-mono">48,5%</td><td class="td-right td-mono">44,5%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        <tr><td>2</td><td>James de Freitas Chaves</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 19.750</td><td class="td-right td-mono">R$ 9.296</td><td class="td-right td-mono">47,1%</td><td class="td-right td-mono">7,9%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        <tr><td>3</td><td>Teza Engenharia</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 14.106</td><td class="td-right td-mono">R$ 5.085</td><td class="td-right td-mono">36,0%</td><td class="td-right td-mono">5,6%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        <tr><td>4</td><td>Santri Sistemas Ltda</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 9.500</td><td class="td-right td-mono">R$ 7.264</td><td class="td-right td-mono">76,5%</td><td class="td-right td-mono">3,8%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
-        <tr><td>5</td><td>Gustavo Henrique Alves</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 8.620</td><td class="td-right td-mono">R$ 5.172</td><td class="td-right td-mono">60,0%</td><td class="td-right td-mono">3,4%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
-        <tr><td>6</td><td>Precisão Comércio Tintas</td><td>Lojista</td><td class="td-right td-mono">R$ 8.518</td><td class="td-right td-mono">R$ 2.365</td><td class="td-right td-mono">27,8%</td><td class="td-right td-mono">3,4%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-        <tr><td>7</td><td>Engenharia Serra Monteiro</td><td>Pintor/Arq.</td><td class="td-right td-mono">R$ 5.790</td><td class="td-right td-mono">R$ 2.861</td><td class="td-right td-mono">49,4%</td><td class="td-right td-mono">2,3%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        <tr><td>8</td><td>Art Colors Tintas</td><td>Lojista</td><td class="td-right td-mono">R$ 5.610</td><td class="td-right td-mono">R$ 2.070</td><td class="td-right td-mono">36,9%</td><td class="td-right td-mono">2,2%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-        <tr><td>9</td><td>Rafaela Rodrigues</td><td>Consumidor Final</td><td class="td-right td-mono">R$ 5.560</td><td class="td-right td-mono">R$ 3.481</td><td class="td-right td-mono">62,6%</td><td class="td-right td-mono">2,2%</td><td><span class="badge badge-green">Meta Batida</span></td></tr>
-        <tr><td>10</td><td>Welton Silva Pintor</td><td>Pintor/Arq.</td><td class="td-right td-mono">R$ 4.940</td><td class="td-right td-mono">R$ 2.312</td><td class="td-right td-mono">46,8%</td><td class="td-right td-mono">2,0%</td><td><span class="badge badge-amber">Atenção</span></td></tr>
-      </tbody></table>
+      <tbody id="clientes-tbody"></tbody></table>
     </div>
   </div>
 </div>
 
 <!-- ===== VAZAMENTOS ===== -->
 <div id="page-vazamentos" class="page">
-  <div class="topbar"><div class="topbar-left"><h1>Vazamentos de Margem</h1><p>Itens com MC abaixo de 10% · Fev 2026</p></div></div>
+  <div class="topbar"><div class="topbar-left"><h1>Vazamentos de Margem</h1><p id="vaz-subtitle">—</p></div></div>
   <div class="content">
-    <div class="alert-box alert-red"><div class="alert-icon">⚠</div><div><div class="alert-title" style="color:var(--red)">6 itens com vazamento detectados</div><div class="alert-text">Todos referentes ao produto <strong>Tela de Fibra de Vidro (40x40mm)</strong>. O custo de MP (R$ 700/un) é igual ou superior ao valor de venda em vários pedidos. <strong>Reprecificação urgente necessária.</strong></div></div></div>
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">Itens Críticos</div><div class="kpi-value" style="color:var(--red)">6</div><div class="kpi-meta">MC abaixo de 10%</div></div>
-      <div class="kpi-card"><div class="kpi-label">Fat. em Risco</div><div class="kpi-value" style="font-size:18px;color:var(--red)">R$ 10.100</div><div class="kpi-meta">4,0% do fat. total</div></div>
-      <div class="kpi-card"><div class="kpi-label">Produto Principal</div><div class="kpi-value" style="font-size:13px;color:var(--red);margin-top:8px">Tela Fibra Vidro</div><div class="kpi-meta">100% dos vazamentos</div></div>
-      <div class="kpi-card"><div class="kpi-label">Ação Necessária</div><div class="kpi-value" style="font-size:13px;color:var(--amber);margin-top:8px">Reprecificar</div><div class="kpi-meta">Custo MP = R$ 700/un</div></div>
-    </div>
+    <div class="alert-box alert-red"><div class="alert-icon">⚠</div><div><div class="alert-title" style="color:var(--red)" id="vaz-alert-title">—</div><div class="alert-text" id="vaz-alert-text">—</div></div></div>
+    <div class="kpi-grid" id="vaz-kpis"></div>
     <div class="card"><div class="card-header"><div class="card-title">Detalhamento dos Vazamentos</div></div>
-    <table><thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th class="td-right">Qtd</th><th class="td-right">V. Unit</th><th class="td-right">V. Total</th><th class="td-right">Custo Total</th><th class="td-right">MC (R$)</th><th class="td-right">MC%</th><th>Status</th></tr></thead>
-    <tbody>
-      <tr class="row-vazamento"><td>2781</td><td>Engenharia Serra Monteiro</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 784</td><td class="td-right td-mono" style="color:var(--red)">-R$ 84</td><td class="td-right td-mono" style="color:var(--red)">-12,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-      <tr class="row-vazamento"><td>2804</td><td>Vinicius</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 721</td><td class="td-right td-mono" style="color:var(--red)">-R$ 21</td><td class="td-right td-mono" style="color:var(--red)">-3,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-      <tr class="row-vazamento"><td>2817</td><td>Gustavo Henrique Alves</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono" style="color:var(--text3)">R$ 0</td><td class="td-right td-mono" style="color:var(--text3)">0,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-      <tr class="row-vazamento"><td>2850</td><td>Rafaela Rodrigues</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">1</td><td class="td-right td-mono">R$ 300</td><td class="td-right td-mono">R$ 300</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono" style="color:var(--red)">-R$ 400</td><td class="td-right td-mono" style="color:var(--red)">-133,3%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-      <tr class="row-vazamento"><td>2851</td><td>Condomínio Euroville II</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">11</td><td class="td-right td-mono">R$ 700</td><td class="td-right td-mono">R$ 7.700</td><td class="td-right td-mono">R$ 8.393</td><td class="td-right td-mono" style="color:var(--red)">-R$ 693</td><td class="td-right td-mono" style="color:var(--red)">-9,0%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-      <tr class="row-vazamento"><td>2867</td><td>James de Freitas Chaves</td><td>Tela de Fibra de Vidro (40x40mm)</td><td class="td-right">2</td><td class="td-right td-mono">R$ 750</td><td class="td-right td-mono">R$ 1.500</td><td class="td-right td-mono">R$ 1.536</td><td class="td-right td-mono" style="color:var(--red)">-R$ 36</td><td class="td-right td-mono" style="color:var(--red)">-2,4%</td><td><span class="badge badge-red">Crítico</span></td></tr>
-    </tbody></table></div>
+      <table><thead><tr><th>Pedido</th><th>Cliente</th><th>Produto</th><th class="td-right">Qtd</th><th class="td-right">V. Unit</th><th class="td-right">V. Total</th><th class="td-right">Custo Total</th><th class="td-right">MC (R$)</th><th class="td-right">MC%</th><th>Status</th></tr></thead>
+      <tbody id="vaz-tbody"></tbody></table>
+    </div>
   </div>
 </div>
 
 <!-- ===== METAS ===== -->
 <div id="page-metas" class="page">
-  <div class="topbar"><div class="topbar-left"><h1>Metas de MC</h1><p>Atingimento por canal · Fev 2026</p></div></div>
+  <div class="topbar"><div class="topbar-left"><h1>Metas de MC</h1><p id="metas-subtitle">—</p></div></div>
   <div class="content">
-    <div class="grid-3">
-      <div class="card" style="border-top:3px solid var(--accent)"><div class="card-header"><div class="card-title">Consumidor Final</div></div><div style="text-align:center;padding:8px 0"><div style="font-size:40px;font-weight:600;font-family:'DM Mono',monospace;color:var(--amber)">51,8%</div><div style="font-size:12px;color:var(--text3);margin-top:4px">Meta: 55,0% · Desvio: -3,2%</div><div class="progress-bar" style="margin-top:14px"><div class="progress-fill" style="width:94.2%;background:var(--amber)"></div></div><div style="font-size:11px;color:var(--text3);margin-top:6px">94,2% da meta atingida</div></div></div>
-      <div class="card" style="border-top:3px solid var(--green)"><div class="card-header"><div class="card-title">Pintor/Construtor/Arq.</div></div><div style="text-align:center;padding:8px 0"><div style="font-size:40px;font-weight:600;font-family:'DM Mono',monospace;color:var(--amber)">43,0%</div><div style="font-size:12px;color:var(--text3);margin-top:4px">Meta: 45,0% · Desvio: -2,0%</div><div class="progress-bar" style="margin-top:14px"><div class="progress-fill" style="width:95.6%;background:var(--amber)"></div></div><div style="font-size:11px;color:var(--text3);margin-top:6px">95,6% da meta atingida</div></div></div>
-      <div class="card" style="border-top:3px solid var(--blue)"><div class="card-header"><div class="card-title">Lojista</div></div><div style="text-align:center;padding:8px 0"><div style="font-size:40px;font-weight:600;font-family:'DM Mono',monospace;color:var(--red)">30,8%</div><div style="font-size:12px;color:var(--text3);margin-top:4px">Meta: 35,0% · Desvio: -4,2%</div><div class="progress-bar" style="margin-top:14px"><div class="progress-fill" style="width:88%;background:var(--red)"></div></div><div style="font-size:11px;color:var(--text3);margin-top:6px">88,0% da meta atingida</div></div></div>
-    </div>
-    <div class="card"><div class="card-header"><div class="card-title">Distribuição de Status por Lançamento</div></div><div class="chart-wrap" style="height:260px"><canvas id="chartStatus"></canvas></div><div style="display:flex;gap:20px;margin-top:12px;justify-content:center;flex-wrap:wrap"><span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#2d7a4f;display:inline-block"></span>Meta Batida — 85</span><span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#b7791f;display:inline-block"></span>Atenção — 60</span><span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#c0392b;display:inline-block"></span>Crítico — 6</span></div></div>
+    <div class="grid-3" id="metas-cards"></div>
+    <div class="card"><div class="card-header"><div class="card-title">Distribuição de Status por Lançamento</div></div><div class="chart-wrap" style="height:260px"><canvas id="chartStatus"></canvas></div><div style="display:flex;gap:20px;margin-top:12px;justify-content:center;flex-wrap:wrap" id="metas-legend"></div></div>
   </div>
 </div>
 
 <!-- ===== PAGAMENTOS ===== -->
 <div id="page-pagamentos" class="page">
-  <div class="topbar"><div class="topbar-left"><h1>Formas de Pagamento</h1><p>Distribuição do faturamento · Fev 2026</p></div></div>
+  <div class="topbar"><div class="topbar-left"><h1>Formas de Pagamento</h1><p id="pag-subtitle">—</p></div></div>
   <div class="content">
-    <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">PIX (dominante)</div><div class="kpi-value" style="font-size:18px">R$ 179.873</div><div class="kpi-meta"><span class="tag-up">71,8%</span> do faturamento</div></div>
-      <div class="kpi-card"><div class="kpi-label">Boleto</div><div class="kpi-value" style="font-size:18px">R$ 48.329</div><div class="kpi-meta">19,3% do faturamento</div></div>
-      <div class="kpi-card"><div class="kpi-label">Cartão Crédito</div><div class="kpi-value" style="font-size:18px">R$ 20.324</div><div class="kpi-meta">Link + Crédito: 8,1%</div></div>
-      <div class="kpi-card"><div class="kpi-label">Outros</div><div class="kpi-value" style="font-size:18px">R$ 1.869</div><div class="kpi-meta">Débito + Dinheiro + QR</div></div>
-    </div>
+    <div class="kpi-grid" id="pag-kpis"></div>
     <div class="grid-2-even">
       <div class="card"><div class="card-header"><div class="card-title">Distribuição por Forma de Pagamento</div></div><div class="chart-wrap" style="height:260px"><canvas id="chartPag"></canvas></div></div>
-      <div class="card"><div class="card-header"><div class="card-title">Detalhamento</div></div>
-        <div style="padding:4px 0">
-          <div class="pay-item"><div class="pay-name">PIX</div><div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:71.8%"></div></div><div class="pay-val">R$ 179.873 <span style="color:var(--text3)">71,8%</span></div></div>
-          <div class="pay-item"><div class="pay-name">Boleto</div><div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:19.3%;background:var(--blue)"></div></div><div class="pay-val">R$ 48.329 <span style="color:var(--text3)">19,3%</span></div></div>
-          <div class="pay-item"><div class="pay-name">Link Cartão Crédito</div><div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:4.1%;background:var(--green)"></div></div><div class="pay-val">R$ 10.165 <span style="color:var(--text3)">4,1%</span></div></div>
-          <div class="pay-item"><div class="pay-name">Crédito</div><div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:4.1%;background:var(--green)"></div></div><div class="pay-val">R$ 10.160 <span style="color:var(--text3)">4,1%</span></div></div>
-          <div class="pay-item"><div class="pay-name">Débito</div><div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:0.4%;background:var(--text3)"></div></div><div class="pay-val">R$ 1.057 <span style="color:var(--text3)">0,4%</span></div></div>
-          <div class="pay-item"><div class="pay-name">Dinheiro + QR</div><div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:0.3%;background:var(--text3)"></div></div><div class="pay-val">R$ 812 <span style="color:var(--text3)">0,3%</span></div></div>
-        </div>
-      </div>
+      <div class="card"><div class="card-header"><div class="card-title">Detalhamento</div></div><div style="padding:4px 0" id="pag-list"></div></div>
     </div>
   </div>
 </div>
-
 </main>
 </div>
 
@@ -1066,8 +1018,14 @@ function nav(page, el) {
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   document.getElementById('page-'+page).classList.add('active');
   if(el){document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));el.classList.add('active');}
-  if(page==='dashboard') renderDashboard();
+  if(page==='dashboard')  renderDashboard();
   if(page==='lancamentos') renderLancamentos();
+  if(page==='canais')     renderCanais();
+  if(page==='clientes')   renderClientes();
+  if(page==='vazamentos') renderVazamentos();
+  if(page==='metas')      renderMetas();
+  if(page==='pagamentos') renderPagamentos();
+}
   if(page==='canais') renderCanalCharts();
   if(page==='metas') renderStatusChart();
   if(page==='pagamentos') renderPagChart();
@@ -1160,6 +1118,7 @@ function rowHTML(r, idx){
     <td class="td-center">${statusBadge}</td>
     <td class="td-center">${vazIcon}</td>
     <td class="td-center"><button class="btn-edit" onclick="abrirEdicao(${idx})" title="Editar lançamento">✏</button></td>
+    <td class="td-center"><button class="btn-edit" onclick="excluirLancamento(${idx})" title="Excluir lançamento" style="color:var(--red);border-color:var(--red)">✕</button></td>
   </tr>`;
 }
 
@@ -1303,7 +1262,198 @@ window.addEventListener('load',()=>{
   renderLancamentos();
 });
 
-function renderCanalCharts(){
+// ======= RENDER DINÂMICO DE TODAS AS PÁGINAS =======
+function getMesLabel2() {
+  const idx = MESES_PT.indexOf(MES_ATIVO.slice(0,3));
+  return idx >= 0 ? MESES_FULL[idx] + ' ' + MES_ATIVO.slice(3) : MES_ATIVO;
+}
+
+function renderCanais() {
+  const data = LANCAMENTOS;
+  const label = getMesLabel2();
+  const fR = v => 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const p1 = v => v.toFixed(1)+'%';
+  document.getElementById('canais-subtitle').textContent = `Performance por tipo de cliente · ${label}`;
+  const fat = data.reduce((a,r)=>a+r.vTotal,0);
+  const canaisDef = [
+    {key:'Consumidor Final',   label:'Consumidor Final',        cor:'var(--accent)', metaP:55},
+    {key:'Pintor/Construtor/Arquiteto', label:'Pintor/Construtor/Arq.', cor:'var(--green)',  metaP:45},
+    {key:'Lojista',            label:'Lojista',                 cor:'var(--blue)',   metaP:35}
+  ];
+  const canaisData = {};
+  data.forEach(r=>{
+    if(!canaisData[r.tipo]) canaisData[r.tipo]={fat:0,mc:0,peds:new Set()};
+    canaisData[r.tipo].fat+=r.vTotal; canaisData[r.tipo].mc+=r.mc_r; canaisData[r.tipo].peds.add(r.pedido);
+  });
+  const totalFat=fat; const totalMC=data.reduce((a,r)=>a+r.mc_r,0);
+  const totalPed=new Set(data.map(r=>r.pedido)).size;
+  const totalMCPct=totalFat>0?(totalMC/totalFat)*100:0;
+  // KPIs
+  const cores=['var(--accent)','var(--green)','var(--blue)','var(--border2)'];
+  document.getElementById('canais-kpis').innerHTML = canaisDef.map((c,i)=>{
+    const d=canaisData[c.key]||{fat:0,mc:0,peds:new Set()};
+    const mcP=d.fat>0?(d.mc/d.fat)*100:0;
+    const tagC=mcP>=c.metaP?'tag-up':mcP>=c.metaP*0.8?'tag-warn':'tag-down';
+    return `<div class="kpi-card" style="border-top:3px solid ${cores[i]}"><div class="kpi-label">${c.label}</div><div class="kpi-value" style="font-size:18px">${fR(d.fat)}</div><div class="kpi-meta">${d.peds.size} pedidos · <span class="${tagC}">MC ${p1(mcP)}</span></div></div>`;
+  }).join('') + `<div class="kpi-card" style="border-top:3px solid var(--border2)"><div class="kpi-label">Total Geral</div><div class="kpi-value" style="font-size:18px">${fR(totalFat)}</div><div class="kpi-meta">${totalPed} pedidos · <span class="tag-up">MC ${p1(totalMCPct)}</span></div></div>`;
+  // Tabela
+  document.getElementById('canais-tbody').innerHTML = canaisDef.map(c=>{
+    const d=canaisData[c.key]||{fat:0,mc:0,peds:new Set()};
+    const mcP=d.fat>0?(d.mc/d.fat)*100:0;
+    const dev=mcP-c.metaP;
+    const badge=mcP>=c.metaP?'badge-green':mcP>=10?'badge-amber':'badge-red';
+    const badgeLabel=mcP>=c.metaP?'Meta Batida':mcP>=10?'Atenção':'Abaixo da meta';
+    const devColor=dev>=0?'var(--green)':'var(--red)';
+    return `<tr><td><strong>${c.label}</strong></td><td class="td-right">${d.peds.size}</td><td class="td-right td-mono">${fR(d.fat)}</td><td class="td-right td-mono">${fR(d.mc)}</td><td class="td-right td-mono"><strong>${p1(mcP)}</strong></td><td class="td-right td-mono">${c.metaP.toFixed(1)}%</td><td class="td-right td-mono" style="color:${devColor}">${dev>=0?'+':''}${p1(dev)}</td><td><span class="badge ${badge}">${badgeLabel}</span></td></tr>`;
+  }).join('');
+  // Charts
+  setTimeout(()=>{
+    dc('canalfat');
+    charts['canalfat']=new Chart(document.getElementById('chartCanalFat'),{type:'bar',data:{labels:canaisDef.map(c=>c.label),datasets:[{data:canaisDef.map(c=>(canaisData[c.key]||{fat:0}).fat),backgroundColor:['#c8a96e','#2d7a4f','#1a56a0'],borderRadius:6}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#e5e2da'},ticks:{callback:v=>'R$ '+(v/1000).toFixed(0)+'k',color:'#6b6760',font:{size:11}}},x:{grid:{display:false},ticks:{color:'#6b6760',font:{size:10}}}}}});
+    dc('canalmeta');
+    charts['canalmeta']=new Chart(document.getElementById('chartCanalMeta'),{type:'bar',data:{labels:canaisDef.map(c=>c.label),datasets:[{label:'Realizado',data:canaisDef.map(c=>{const d=canaisData[c.key]||{fat:0,mc:0};return d.fat>0?parseFloat(((d.mc/d.fat)*100).toFixed(1)):0;}),backgroundColor:['#c8a96e','#2d7a4f','#1a56a0'],borderRadius:6},{label:'Meta',data:canaisDef.map(c=>c.metaP),type:'scatter',pointRadius:8,pointHoverRadius:10,pointBackgroundColor:'#c0392b',pointBorderColor:'#fff',pointBorderWidth:2,backgroundColor:'transparent',borderColor:'transparent',showLine:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{grid:{color:'#e5e2da'},ticks:{callback:v=>v+'%',color:'#6b6760',font:{size:11}},suggestedMax:70},x:{grid:{display:false},ticks:{color:'#6b6760',font:{size:10}}}}}});
+  },50);
+}
+
+function renderClientes() {
+  const data = LANCAMENTOS;
+  const label = getMesLabel2();
+  const fR = v => 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const p1 = v => v.toFixed(1)+'%';
+  const fat = data.reduce((a,r)=>a+r.vTotal,0);
+  document.getElementById('clientes-subtitle').textContent = `Ranking por faturamento · ${label}`;
+  document.getElementById('clientes-ranking-title').textContent = `Ranking — ${label}`;
+  const clisMap={};
+  data.forEach(r=>{if(!clisMap[r.cliente])clisMap[r.cliente]={fat:0,mc:0,tipo:r.tipo};clisMap[r.cliente].fat+=r.vTotal;clisMap[r.cliente].mc+=r.mc_r;});
+  const sorted=Object.entries(clisMap).sort((a,b)=>b[1].fat-a[1].fat);
+  const top=sorted[0];
+  if(top){
+    const topPct=fat>0?(top[1].fat/fat)*100:0;
+    document.getElementById('clientes-alert-title').textContent='Concentração de receita';
+    document.getElementById('clientes-alert-text').innerHTML=`O <strong>${top[0]}</strong> representa <strong>${p1(topPct)} do faturamento total</strong> (${fR(top[1].fat)}). ${topPct>40?'Alta concentração — risco elevado de oscilação de resultado.':'Concentração dentro do normal.'}`;
+  }
+  document.getElementById('clientes-tbody').innerHTML=sorted.slice(0,15).map(([nome,d],i)=>{
+    const mcP=d.fat>0?(d.mc/d.fat)*100:0;
+    const fatPct=fat>0?(d.fat/fat)*100:0;
+    const meta=META[d.tipo]||35;
+    const badge=mcP>=meta?'badge-green':mcP>=10?'badge-amber':'badge-red';
+    const bl=mcP>=meta?'Meta Batida':mcP>=10?'Atenção':'Crítico';
+    const canalLabel=d.tipo==='Pintor/Construtor/Arquiteto'?'Pintor/Arq.':d.tipo;
+    return `<tr><td>${i+1}</td><td>${i===0?`<strong>${nome}</strong>`:nome}</td><td>${canalLabel}</td><td class="td-right td-mono">${fR(d.fat)}</td><td class="td-right td-mono">${fR(d.mc)}</td><td class="td-right td-mono">${p1(mcP)}</td><td class="td-right td-mono">${p1(fatPct)}</td><td><span class="badge ${badge}">${bl}</span></td></tr>`;
+  }).join('');
+}
+
+function renderVazamentos() {
+  const data = LANCAMENTOS;
+  const label = getMesLabel2();
+  const fR = v => 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const p1 = v => v.toFixed(1)+'%';
+  const fat = data.reduce((a,r)=>a+r.vTotal,0);
+  const vazList = data.filter(r=>r.mc_p<10);
+  const nCr=vazList.length;
+  const fatRisco=vazList.reduce((a,r)=>a+r.vTotal,0);
+  const fatRiscoPct=fat>0?(fatRisco/fat)*100:0;
+  document.getElementById('vaz-subtitle').textContent=`Itens com MC abaixo de 10% · ${label}`;
+  document.getElementById('vaz-alert-title').textContent=nCr===0?'Nenhum vazamento detectado neste mês!':`${nCr} ${nCr===1?'item':'itens'} com vazamento detectado${nCr!==1?'s':''}`;
+  document.getElementById('vaz-alert-text').textContent=nCr===0?'Todos os lançamentos estão com margem acima de 10%.':'Revise os lançamentos abaixo e corrija a precificação.';
+  document.getElementById('vaz-kpis').innerHTML=`
+    <div class="kpi-card"><div class="kpi-label">Itens Críticos</div><div class="kpi-value" style="color:var(--red)">${nCr}</div><div class="kpi-meta">MC abaixo de 10%</div></div>
+    <div class="kpi-card"><div class="kpi-label">Fat. em Risco</div><div class="kpi-value" style="font-size:18px;color:var(--red)">${fR(fatRisco)}</div><div class="kpi-meta">${p1(fatRiscoPct)} do fat. total</div></div>
+    <div class="kpi-card"><div class="kpi-label">MC Negativa</div><div class="kpi-value" style="font-size:18px;color:var(--red)">${fR(vazList.filter(r=>r.mc_r<0).reduce((a,r)=>a+r.mc_r,0))}</div><div class="kpi-meta">Prejuízo acumulado</div></div>
+    <div class="kpi-card"><div class="kpi-label">Ação</div><div class="kpi-value" style="font-size:13px;color:var(--amber);margin-top:8px">${nCr===0?'Nenhuma':'Reprecificar'}</div><div class="kpi-meta">Itens abaixo de 10% MC</div></div>`;
+  document.getElementById('vaz-tbody').innerHTML=vazList.length===0
+    ?'<tr><td colspan="10" style="text-align:center;padding:24px;color:var(--text3)">Nenhum vazamento em '+label+'</td></tr>'
+    :vazList.map(r=>`<tr class="row-vazamento"><td>${r.pedido}</td><td>${r.cliente.length>25?r.cliente.slice(0,23)+'…':r.cliente}</td><td>${r.produto.length>30?r.produto.slice(0,28)+'…':r.produto}</td><td class="td-right">${r.qtd}</td><td class="td-right td-mono">${fR(r.vUnit)}</td><td class="td-right td-mono">${fR(r.vTotal)}</td><td class="td-right td-mono">${fR(r.custoTotP)}</td><td class="td-right td-mono" style="color:var(--red)">${fR(r.mc_r)}</td><td class="td-right td-mono" style="color:var(--red)">${p1(r.mc_p)}</td><td><span class="badge badge-red">Crítico</span></td></tr>`).join('');
+}
+
+function renderMetas() {
+  const data = LANCAMENTOS;
+  const label = getMesLabel2();
+  const p1 = v => v.toFixed(1)+'%';
+  document.getElementById('metas-subtitle').textContent=`Atingimento por canal · ${label}`;
+  const canaisDef=[
+    {key:'Consumidor Final',cor:'var(--accent)',meta:55},
+    {key:'Pintor/Construtor/Arquiteto',cor:'var(--green)',meta:45},
+    {key:'Lojista',cor:'var(--blue)',meta:35}
+  ];
+  const canaisData={};
+  data.forEach(r=>{if(!canaisData[r.tipo])canaisData[r.tipo]={fat:0,mc:0};canaisData[r.tipo].fat+=r.vTotal;canaisData[r.tipo].mc+=r.mc_r;});
+  document.getElementById('metas-cards').innerHTML=canaisDef.map(c=>{
+    const d=canaisData[c.key]||{fat:0,mc:0};
+    const mcP=d.fat>0?(d.mc/d.fat)*100:0;
+    const dev=mcP-c.meta;
+    const color=mcP>=c.meta?'var(--green)':mcP>=c.meta*0.8?'var(--amber)':'var(--red)';
+    const bgColor=mcP>=c.meta?'var(--green)':mcP>=c.meta*0.8?'var(--amber)':'var(--red)';
+    const ating=c.meta>0?(mcP/c.meta)*100:0;
+    const nome=c.key==='Pintor/Construtor/Arquiteto'?'Pintor/Construtor/Arq.':c.key;
+    return `<div class="card" style="border-top:3px solid ${c.cor}"><div class="card-header"><div class="card-title">${nome}</div></div><div style="text-align:center;padding:8px 0"><div style="font-size:40px;font-weight:600;font-family:'DM Mono',monospace;color:${color}">${p1(mcP)}</div><div style="font-size:12px;color:var(--text3);margin-top:4px">Meta: ${c.meta.toFixed(1)}% · Desvio: ${dev>=0?'+':''}${p1(dev)}</div><div class="progress-bar" style="margin-top:14px"><div class="progress-fill" style="width:${Math.min(ating,100).toFixed(1)}%;background:${bgColor}"></div></div><div style="font-size:11px;color:var(--text3);margin-top:6px">${ating.toFixed(1)}% da meta atingida</div></div></div>`;
+  }).join('');
+  const nOk=data.filter(r=>r.status==='Meta Batida').length;
+  const nAt=data.filter(r=>r.status==='Atenção').length;
+  const nCr=data.filter(r=>r.status==='Crítico').length;
+  document.getElementById('metas-legend').innerHTML=`<span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#2d7a4f;display:inline-block"></span>Meta Batida — ${nOk}</span><span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#b7791f;display:inline-block"></span>Atenção — ${nAt}</span><span style="display:flex;align-items:center;gap:5px;font-size:12px"><span style="width:10px;height:10px;border-radius:50%;background:#c0392b;display:inline-block"></span>Crítico — ${nCr}</span>`;
+  setTimeout(()=>{
+    dc('status');
+    charts['status']=new Chart(document.getElementById('chartStatus'),{type:'doughnut',data:{labels:['Meta Batida','Atenção','Crítico'],datasets:[{data:[nOk,nAt,nCr],backgroundColor:['#2d7a4f','#b7791f','#c0392b'],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}});
+  },50);
+}
+
+function renderPagamentos() {
+  const data = LANCAMENTOS;
+  const label = getMesLabel2();
+  const fR = v => 'R$ ' + v.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+  const p1 = v => v.toFixed(1)+'%';
+  const fat = data.reduce((a,r)=>a+r.vTotal,0);
+  document.getElementById('pag-subtitle').textContent=`Distribuição do faturamento · ${label}`;
+  // Group by payment
+  const pagMap={};
+  data.forEach(r=>{const p=r.pag||'Outros';if(!pagMap[p])pagMap[p]=0;pagMap[p]+=r.vTotal;});
+  const sorted=Object.entries(pagMap).sort((a,b)=>b[1]-a[1]);
+  // KPIs top 4
+  const cores=['var(--accent)','var(--blue)','var(--green)','var(--text3)'];
+  const kpiGroups=[
+    {label:'PIX',keys:['PIX','PIX QR CODE'],cor:'var(--accent)'},
+    {label:'Boleto',keys:['BOLETO'],cor:'var(--blue)'},
+    {label:'Cartão Crédito',keys:['CREDITO','LINK CARTAO CREDITO'],cor:'var(--green)'},
+    {label:'Outros',keys:['DEBITO','DINHEIRO'],cor:'var(--text3)'}
+  ];
+  document.getElementById('pag-kpis').innerHTML=kpiGroups.map((g,i)=>{
+    const v=g.keys.reduce((a,k)=>a+(pagMap[k]||0),0);
+    const pct=fat>0?(v/fat)*100:0;
+    return `<div class="kpi-card"><div class="kpi-label">${g.label}</div><div class="kpi-value" style="font-size:18px">${fR(v)}</div><div class="kpi-meta"><span class="tag-up">${p1(pct)}</span> do faturamento</div></div>`;
+  }).join('');
+  // List
+  document.getElementById('pag-list').innerHTML=sorted.map(([nome,v])=>{
+    const pct=fat>0?(v/fat)*100:0;
+    const barW=Math.max(pct,0.3).toFixed(1);
+    return `<div class="pay-item"><div class="pay-name">${nome}</div><div class="pay-bar-wrap"><div class="pay-bar-fill" style="width:${barW}%"></div></div><div class="pay-val">${fR(v)} <span style="color:var(--text3)">${p1(pct)}</span></div></div>`;
+  }).join('');
+  // Chart
+  setTimeout(()=>{
+    dc('pag');
+    charts['pag']=new Chart(document.getElementById('chartPag'),{type:'doughnut',data:{labels:sorted.map(e=>e[0]),datasets:[{data:sorted.map(e=>e[1]),backgroundColor:['#c8a96e','#1a56a0','#2d7a4f','#b7791f','#9c9890','#c0392b'],borderWidth:0,hoverOffset:8}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},cutout:'60%'}});
+  },50);
+}
+
+// ======= EXCLUIR LANÇAMENTO =======
+async function excluirLancamento(idx) {
+  const r = LANCAMENTOS[idx];
+  if (!r) return;
+  if (!confirm(`Excluir lançamento?\n\nPedido: ${r.pedido}\nCliente: ${r.cliente}\nProduto: ${r.produto}\n\nEsta ação não pode ser desfeita.`)) return;
+  try {
+    const result = await sheetsPost('deleteLancamento', {_rowindex: r._rowIndex}, MES_ATIVO);
+    if (result.success) {
+      LANCAMENTOS.splice(idx, 1);
+      mostrarToast('✓ Lançamento excluído com sucesso', 'green');
+      renderLancamentos();
+      renderDashboard();
+    } else {
+      mostrarToast('Erro ao excluir: ' + (result.error||''), 'red');
+    }
+  } catch(e) {
+    mostrarToast('Erro de conexão ao excluir', 'red');
+  }
+}
   setTimeout(()=>{
     dc('canalfat');
     charts['canalfat']=new Chart(document.getElementById('chartCanalFat'),{
